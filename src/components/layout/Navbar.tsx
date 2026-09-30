@@ -111,19 +111,16 @@ export default function Navbar() {
           <div className="relative">
             <button
               onClick={() => setLangDropdownOpen(!langDropdownOpen)}
-              className={`group relative w-11 h-11 flex items-center justify-center rounded-xl border transition-all touch-target ${
+              className={`group relative w-11 h-11 flex items-center justify-center transition-all touch-target ${
                 langDropdownOpen
-                  ? "text-trust bg-trust-subtle border-trust/30 shadow-soft"
-                  : "text-trust bg-blue-50/70 border-blue-100 hover:bg-blue-100 hover:border-blue-200"
+                  ? "text-trust"
+                  : "text-trust hover:text-trust-hover"
               }`}
               aria-label={`Language: ${languages.find((l) => l.code === language)?.label}. Change language`}
               aria-expanded={langDropdownOpen}
               title="Change language"
             >
               <Globe className="w-5 h-5" />
-              <span className="absolute -bottom-0.5 -right-0.5 min-w-4 h-4 px-1 rounded-full bg-trust text-white text-[8px] font-extrabold uppercase leading-4 ring-2 ring-white">
-                {language}
-              </span>
               <span className="pointer-events-none absolute top-full right-0 mt-2 hidden sm:group-hover:block whitespace-nowrap rounded-lg bg-primary px-2.5 py-1.5 text-[10px] font-semibold text-white shadow-elevated">
                 Change language
               </span>
@@ -155,7 +152,7 @@ export default function Navbar() {
             <div className="hidden sm:flex items-center gap-2">
               <Link
                 href="/settings"
-                className="group relative w-11 h-11 flex items-center justify-center text-accent bg-accent-subtle border border-teal-100 hover:bg-teal-100 hover:border-teal-200 rounded-xl transition-all"
+                className="group relative w-11 h-11 flex items-center justify-center text-accent hover:text-accent-hover transition-all"
                 title={t("settings.title")}
                 aria-label={t("settings.title")}
               >
@@ -166,7 +163,7 @@ export default function Navbar() {
               </Link>
               <button
                 onClick={() => signOut({ callbackUrl: "/" })}
-                className="group relative w-11 h-11 flex items-center justify-center text-risk-high bg-risk-high-bg border border-risk-high-border/60 hover:bg-red-100 hover:border-risk-high-border rounded-xl transition-all"
+                className="group relative w-11 h-11 flex items-center justify-center text-risk-high hover:text-risk-critical transition-all"
                 title={t("nav.logout")}
                 aria-label={t("nav.logout")}
               >
