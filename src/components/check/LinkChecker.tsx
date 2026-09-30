@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Globe, Link2, AlertCircle, ShieldCheck, Sparkles, Building2 } from "lucide-react";
+import { Link2, AlertCircle, ShieldCheck, Building2 } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/context";
 import ProcessingScreen from "@/components/common/ProcessingScreen";
 
@@ -14,42 +14,25 @@ export default function LinkChecker() {
   const [claimedBrand, setClaimedBrand] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [brands, setBrands] = useState<Array<{ id: string; name: string }>>([]);
 
-  const popularBrands = [
-    "Daraz",
-    "Sri Lanka Post",
-    "Commercial Bank of Ceylon",
-    "Bank of Ceylon (BOC)",
-    "Sampath Bank",
-    "Dialog Axiata",
-    "SLT-MOBITEL",
-    "PickMe",
-    "Uber",
-    "DHL Express",
-  ];
-
-  const sampleLinks = [
-    {
-      title: "Sri Lanka Post Lookalike Phishing",
-      url: "http://slpost-customs-clearance.top/pay",
-      brand: "Sri Lanka Post",
-    },
-    {
-      title: "Daraz Impersonation Phishing",
-      url: "http://daraz-delivery-tracking.xyz/claim-order",
-      brand: "Daraz",
-    },
-    {
-      title: "Dialog Official Portal (Safe verification)",
-      url: "https://dialog.lk/myaccount",
-      brand: "Dialog Axiata",
-    },
-    {
-      title: "Raw IP Phishing Kit",
-      url: "http://192.241.144.20/bank/login.php",
-      brand: "Commercial Bank of Ceylon",
-    },
-  ];
+  useEffect(() => {
+    async function loadBrands() {
+      try {
+        const response = await fetch("/api/brands");
+        const data = await response.json();
+        if (response.ok && Array.isArray(data.brands)) {
+          setBrands(data.brands.map((brand: { id: string; name: string }) => ({
+            id: brand.id,
+            name: brand.name,
+          })));
+        }
+      } catch {
+        setError("The official brand registry is temporarily unavailable.");
+      }
+    }
+    loadBrands();
+  }, []);
 
   const handleAnalyze = async () => {
     if (!url.trim()) {
@@ -133,39 +116,15 @@ export default function LinkChecker() {
           className="w-full p-3.5 text-sm rounded-xl border border-surface-border bg-surface text-text-primary focus:outline-none focus:ring-2 focus:ring-trust/20 focus:border-trust"
         >
           <option value="">-- Compare with official Brand Registry (e.g. Daraz, SL Post) --</option>
-          {popularBrands.map((b) => (
-            <option key={b} value={b}>
-              {b}
+          {brands.map((brand) => (
+            <option key={brand.id} value={brand.name}>
+              {brand.name}
             </option>
           ))}
         </select>
         <p className="text-xs text-text-tertiary px-1">
           If the message claims to be from a specific company, select it here to test for lookalike domain impersonation.
         </p>
-      </div>
-
-      {/* Sample presets */}
-      <div className="space-y-2">
-        <span className="text-xs font-medium text-text-secondary flex items-center gap-1.5">
-          <Sparkles className="w-3.5 h-3.5 text-trust" />
-          Try sample URLs:
-        </span>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {sampleLinks.map((s, idx) => (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => {
-                setUrl(s.url);
-                setClaimedBrand(s.brand);
-              }}
-              className="text-left p-2.5 rounded-xl bg-surface border border-surface-border hover:border-trust/60 hover:bg-trust-subtle/30 transition-all text-xs"
-            >
-              <div className="font-semibold text-text-primary">{s.title}</div>
-              <div className="text-text-secondary font-mono text-[11px] truncate mt-0.5">{s.url}</div>
-            </button>
-          ))}
-        </div>
       </div>
 
       {/* Primary Action Button */}

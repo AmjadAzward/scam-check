@@ -42,11 +42,6 @@ export default function LoginPage() {
     }
   };
 
-  const handleQuickLogin = (demoEmail: string, demoPass: string) => {
-    setEmail(demoEmail);
-    setPassword(demoPass);
-  };
-
   return (
     <div className="max-w-md mx-auto space-y-6 pt-6 animate-in fade-in duration-300">
       <div className="text-center space-y-2">
@@ -117,31 +112,6 @@ export default function LoginPage() {
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
-
-        {/* Demo Fast Login Buttons */}
-        <div className="pt-2 border-t border-surface-border space-y-2">
-          <span className="text-[11px] font-semibold text-text-tertiary uppercase block text-center">
-            Instant Demo Logins
-          </span>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => handleQuickLogin("admin@scamcheck.lk", "Admin123!Secure")}
-              className="p-2 rounded-xl bg-surface-muted border border-surface-border hover:border-trust text-left text-xs transition-colors"
-            >
-              <div className="font-bold text-text-primary">Admin Account</div>
-              <div className="text-[10px] text-text-tertiary truncate">admin@scamcheck.lk</div>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickLogin("user@scamcheck.lk", "User123!Safe")}
-              className="p-2 rounded-xl bg-surface-muted border border-surface-border hover:border-trust text-left text-xs transition-colors"
-            >
-              <div className="font-bold text-text-primary">Regular User</div>
-              <div className="text-[10px] text-text-tertiary truncate">user@scamcheck.lk</div>
-            </button>
-          </div>
-        </div>
 
         <div className="text-center text-xs text-text-secondary pt-1">
           Don&apos;t have an account?{" "}

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Send, Sparkles, AlertCircle, ShieldCheck } from "lucide-react";
+import { AlertCircle, ShieldCheck } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/context";
 import ProcessingScreen from "@/components/common/ProcessingScreen";
 
@@ -13,25 +13,6 @@ export default function MessageChecker() {
   const [message, setMessage] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const sampleMessages = [
-    {
-      title: "Customs Parcel Detention (Courier Phishing)",
-      text: "Your parcel has been detained. Pay Rs. 450 immediately using this link: http://slpost-customs-clearance.top/pay",
-    },
-    {
-      title: "Bank Account Suspension (Sinhala / සිංහල)",
-      text: "ඔබගේ Commercial Bank ගිණුම අත්හිටුවා ඇත. වහාම සත්‍යාපනය සඳහා ඔබගේ OTP අංකය සහ මුරපදය මෙහි ඇතුළත් කරන්න.",
-    },
-    {
-      title: "Marketplace Deposit Request",
-      text: "Hi, item still available. I have 3 other buyers. Please transfer Rs. 3,500 advance to my personal account now to hold it.",
-    },
-    {
-      title: "Work From Home Easy Task (Tamil / தமிழ்)",
-      text: "தினசரி Rs. 8000 வருமானம். YouTube வீடியோக்களை லைக் செய்து பணம் பெறுங்கள். பதிவு கட்டணம் Rs. 2000 செலுத்தவும்.",
-    },
-  ];
 
   const handleAnalyze = async () => {
     if (!message.trim()) {
@@ -95,27 +76,6 @@ export default function MessageChecker() {
         <div className="flex justify-between items-center text-xs text-text-tertiary px-1">
           <span>Supports SMS, WhatsApp, Telegram, and social media text</span>
           <span>{message.length} characters</span>
-        </div>
-      </div>
-
-      {/* Sample presets for instant testing */}
-      <div className="space-y-2">
-        <span className="text-xs font-medium text-text-secondary flex items-center gap-1.5">
-          <Sparkles className="w-3.5 h-3.5 text-trust" />
-          Try common Sri Lanka scam patterns:
-        </span>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {sampleMessages.map((sample, idx) => (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => setMessage(sample.text)}
-              className="text-left p-2.5 rounded-xl bg-surface border border-surface-border hover:border-trust/60 hover:bg-trust-subtle/30 transition-all text-xs"
-            >
-              <div className="font-semibold text-text-primary truncate">{sample.title}</div>
-              <div className="text-text-secondary line-clamp-1 mt-0.5">{sample.text}</div>
-            </button>
-          ))}
         </div>
       </div>
 

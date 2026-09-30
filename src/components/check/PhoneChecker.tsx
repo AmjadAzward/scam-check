@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Phone, Users, ShieldCheck, AlertCircle, Sparkles, Clock, AlertTriangle } from "lucide-react";
+import { Phone, ShieldCheck, AlertCircle } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/context";
 import ProcessingScreen from "@/components/common/ProcessingScreen";
 import RiskBadge from "@/components/risk/RiskBadge";
@@ -16,21 +16,6 @@ export default function PhoneChecker() {
   const [quickResult, setQuickResult] = useState<any>(null);
   const [isQuickLoading, setIsQuickLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const sampleNumbers = [
-    {
-      title: "Reported Courier & Marketplace (+94 77 019 2834)",
-      number: "+94770192834",
-    },
-    {
-      title: "Investment Scam Telegram Group (+94 71 928 3746)",
-      number: "+94719283746",
-    },
-    {
-      title: "Clean Local Mobile Number (077 123 4567)",
-      number: "0771234567",
-    },
-  ];
 
   const handleQuickLookup = async (numberToLookup: string) => {
     if (!numberToLookup || numberToLookup.trim().length < 3) return;
@@ -195,30 +180,6 @@ export default function PhoneChecker() {
           </button>
         </div>
       )}
-
-      {/* Sample presets */}
-      <div className="space-y-2">
-        <span className="text-xs font-medium text-text-secondary flex items-center gap-1.5">
-          <Sparkles className="w-3.5 h-3.5 text-trust" />
-          Test sample numbers:
-        </span>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-          {sampleNumbers.map((s, idx) => (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => {
-                setPhone(s.number);
-                handleQuickLookup(s.number);
-              }}
-              className="text-left p-2.5 rounded-xl bg-surface border border-surface-border hover:border-trust/60 hover:bg-trust-subtle/30 transition-all text-xs"
-            >
-              <div className="font-semibold text-text-primary truncate">{s.title}</div>
-              <div className="text-text-secondary font-mono text-[11px] mt-0.5">{s.number}</div>
-            </button>
-          ))}
-        </div>
-      </div>
 
       {/* Primary Action Button (if quick lookup not shown) */}
       {!quickResult && (
