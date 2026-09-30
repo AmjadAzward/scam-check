@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# Local environment and secrets
+.env
+.env.local
+.env.*.local
+
+# Local databases and private uploads
+prisma/*.db
+prisma/*.db-journal
+private_uploads/
+
+# Logs and generated TypeScript state
+*.log
+tsconfig.tsbuildinfo
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

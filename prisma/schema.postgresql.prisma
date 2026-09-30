@@ -1,0 +1,166 @@
+// PostgreSQL configuration for ScamCheck production
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String          @id @default(cuid())
+  name         String?
+  email        String          @unique
+  passwordHash String
+  country      String          @default("LK")
+  language     String          @default("en")
+  role         String          @default("USER") // "USER" | "MODERATOR" | "ADMIN"
+  timezone     String          @default("Asia/Colombo")
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  preferences  UserPreference?
+  scans        Scan[]
+  reports      CommunityReport[]
+  auditLogs    AuditLog[]
+
+  @@index([email])
+}
+
+model UserPreference {
+  id                          String   @id @default(cuid())
+  userId                      String   @unique
+  user                        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  language                    String   @default("en")
+  deleteScreenshotsAfterScan  Boolean  @default(true)
+  notificationsEnabled        Boolean  @default(true)
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+}
+
+model Scan {
+  id          String       @id @default(cuid())
+  userId      String?
+  user        User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  scanType    String       // "SCREENSHOT" | "MESSAGE" | "URL" | "PHONE" | "QR"
+  status      String       @default("COMPLETED") // "COMPLETED" | "PROCESSING" | "FAILED"
+  riskLevel   String       // "LOW_RISK" | "MEDIUM_RISK" | "HIGH_RISK" | "KNOWN_MALICIOUS"
+  riskScore   Int          // 0 - 100
+  summary     String       @db.Text
+  language    String       @default("en")
+  isSaved     Boolean      @default(false)
+  claimedOrg  String?
+  normalizedTarget String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  inputs      ScanInput[]
+  signals     RiskSignal[]
+
+  @@index([userId])
+  @@index([riskLevel])
+  @@index([createdAt])
+}
+
+model ScanInput {
+  id         String   @id @default(cuid())
+  scanId     String
+  scan       Scan     @relation(fields: [scanId], references: [id], onDelete: Cascade)
+  inputType  String   // "TEXT" | "IMAGE" | "URL" | "PHONE" | "QR_IMAGE" | "QR_DESTINATION"
+  text       String?  @db.Text
+  storageKey String?
+  mimeType   String?
+  createdAt  DateTime @default(now())
+
+  @@index([scanId])
+}
+
+model RiskSignal {
+  id          String   @id @default(cuid())
+  scanId      String
+  scan        Scan     @relation(fields: [scanId], references: [id], onDelete: Cascade)
+  type        String
+  score       Int
+  confidence  Int
+  title       String
+  description String   @db.Text
+  evidence    String?  @db.Text
+  source      String
+  createdAt   DateTime @default(now())
+
+  @@index([scanId])
+}
+
+model CommunityReport {
+  id                  String   @id @default(cuid())
+  userId              String?
+  user                User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  identifierType      String
+  identifierValueHash String
+  displayValueMasked  String
+  category            String
+  description         String   @db.Text
+  platform            String?
+  amountLost          Float?
+  currency            String   @default("LKR")
+  evidenceStorageKey  String?
+  dateEncountered     DateTime @default(now())
+  status              String   @default("PENDING")
+  moderatorNotes      String?  @db.Text
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([identifierValueHash])
+  @@index([status])
+  @@index([category])
+  @@index([createdAt])
+}
+
+model Brand {
+  id                 String        @id @default(cuid())
+  name               String        @unique
+  aliases            String        @db.Text
+  country            String        @default("LK")
+  verificationStatus String        @default("VERIFIED")
+  domains            BrandDomain[]
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+}
+
+model BrandDomain {
+  id       String  @id @default(cuid())
+  brandId  String
+  brand    Brand   @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  domain   String  @unique
+  official Boolean @default(true)
+
+  @@index([domain])
+}
+
+model ThreatIndicator {
+  id                 String   @id @default(cuid())
+  indicatorType      String
+  indicatorValueHash String
+  displayValue       String
+  source             String
+  riskLevel          String   @default("KNOWN_MALICIOUS")
+  active             Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([indicatorValueHash])
+  @@index([active])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String
+  metadata  String?  @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+}

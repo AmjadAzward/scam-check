@@ -1,0 +1,117 @@
+{
+  "app": {
+    "name": "ScamCheck",
+    "tagline": "Check before you click, pay or reply.",
+    "isThisSafe": "Is this safe?",
+    "subtitle": "Check a suspicious message, screenshot, link or number before taking action."
+  },
+  "actions": {
+    "uploadScreenshot": "Upload Screenshot",
+    "uploadScreenshotDesc": "Analyze SMS, WhatsApp or transaction screenshots",
+    "pasteMessage": "Paste Message",
+    "pasteMessageDesc": "Detect urgency, fake offers, threats and impersonation",
+    "checkLink": "Check Link",
+    "checkLinkDesc": "Inspect suspicious URLs and lookalike domains",
+    "checkNumber": "Check Number",
+    "checkNumberDesc": "Search community reports and caller intelligence",
+    "scanQr": "Scan QR Code",
+    "scanQrDesc": "Decode and analyze QR destinations safely",
+    "checkSomething": "Check Something",
+    "checkAnother": "Check Another",
+    "reportThis": "Report This",
+    "saveCheck": "Save Check",
+    "saved": "Saved",
+    "iAlreadyClicked": "I Already Clicked",
+    "viewDetails": "View Details",
+    "doNotOpen": "Do Not Open",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "copy": "Copy",
+    "back": "Back"
+  },
+  "risk": {
+    "lowRisk": "LOW RISK",
+    "mediumRisk": "MEDIUM RISK",
+    "highRisk": "HIGH RISK",
+    "knownMalicious": "KNOWN MALICIOUS",
+    "scoreLabel": "Risk Score",
+    "whySuspicious": "WHY THIS LOOKS SUSPICIOUS",
+    "whatToDo": "WHAT YOU SHOULD DO",
+    "technicalDetails": "Technical Details",
+    "noThreatsDetected": "We did not detect strong risk indicators, but independent verification is still recommended.",
+    "moderateSignals": "This input shows several risk signals that warrant caution.",
+    "strongIndicators": "This input contains several strong scam indicators. Proceed with extreme caution.",
+    "maliciousNotice": "This identifier matches known threat intelligence feeds or verified malicious campaigns."
+  },
+  "processing": {
+    "readingMessage": "Reading the message...",
+    "checkingLinks": "Checking links...",
+    "lookingForImpersonation": "Looking for impersonation...",
+    "checkingCommunityReports": "Checking community reports...",
+    "analyzingImage": "Extracting text and sensitive indicators...",
+    "preparingResult": "Preparing your result...",
+    "calmNotice": "Analyzing security signals without opening destination"
+  },
+  "nav": {
+    "home": "Home",
+    "checks": "Checks",
+    "check": "Check",
+    "reports": "Reports",
+    "profile": "Profile",
+    "admin": "Admin",
+    "settings": "Settings",
+    "login": "Sign In",
+    "register": "Sign Up",
+    "logout": "Sign Out"
+  },
+  "home": {
+    "recentChecks": "Recent Community Checks",
+    "viewAll": "View all",
+    "reportsCount": "{{count}} community reports",
+    "howItWorks": "How ScamCheck Protects You",
+    "step1Title": "1. Submit Input",
+    "step1Desc": "Upload a screenshot, paste text, drop a link, or enter a number.",
+    "step2Title": "2. Multi-Signal Analysis",
+    "step2Desc": "Evaluated against official brand registries, threat feeds, and AI.",
+    "step3Title": "3. Clear Guidance",
+    "step3Desc": "Get an immediate risk score and clear steps on what to do next."
+  },
+  "reports": {
+    "title": "Community Intelligence",
+    "subtitle": "Community-submitted reports of scams, phishing, and impersonation.",
+    "submitNew": "Submit a Report",
+    "searchPlaceholder": "Search numbers, URLs, or keywords...",
+    "filterCategory": "Category",
+    "allCategories": "All Categories",
+    "reportedOn": "Reported",
+    "encounters": "Encounters",
+    "maskedNotice": "Reporter identities and sensitive information are strictly protected."
+  },
+  "alreadyClicked": {
+    "title": "I Already Clicked or Responded",
+    "subtitle": "Don't panic. Follow these calm, defensive security steps right away.",
+    "question": "What happened?",
+    "options": {
+      "openedSite": "Only opened the website",
+      "personalInfo": "Entered personal information (name, address, ID)",
+      "bankingInfo": "Entered banking information (account number, user ID)",
+      "cardDetails": "Entered card details (card number, CVV, expiry)",
+      "otpEntered": "Entered a one-time password (OTP)",
+      "paymentMade": "Made a payment or money transfer",
+      "installedApp": "Installed an application or APK",
+      "credentials": "Shared login credentials (password, PIN)",
+      "somethingElse": "Something else occurred"
+    }
+  },
+  "settings": {
+    "title": "Settings & Privacy",
+    "privacySection": "Privacy Controls",
+    "deleteScreenshots": "Delete screenshots after analysis",
+    "deleteScreenshotsDesc": "Automatically erase uploaded image bytes immediately after intelligence extraction.",
+    "language": "Display Language",
+    "dataRights": "Your Data Rights",
+    "exportData": "Export My Data",
+    "deleteAllData": "Delete All Scan History",
+    "deleteAccount": "Delete Account"
+  }
+}
