@@ -220,7 +220,7 @@ export default function RiskResultPage() {
             className="w-full py-3.5 px-4 rounded-xl font-bold text-xs text-risk-critical bg-risk-critical-bg border border-risk-critical-border hover:bg-risk-critical/10 transition-colors flex items-center justify-center gap-2 touch-target"
           >
             <ShieldAlert className="w-4 h-4" />
-            <span>{t("actions.iAlreadyClicked")} — Get Incident Guidance</span>
+            <span>{t("actions.iAlreadyClicked")} - Get Incident Guidance</span>
           </Link>
         </div>
 

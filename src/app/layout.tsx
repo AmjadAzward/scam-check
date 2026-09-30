@@ -7,7 +7,7 @@ import MobileNav from "@/components/layout/MobileNav";
 import Footer from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
-  title: "ScamCheck — Check before you click, pay or reply",
+  title: "ScamCheck - Check before you click, pay or reply",
   description:
     "Evaluate suspicious messages, screenshots, links, phone numbers and QR codes before you click, pay or reply. Consumer digital safety platform.",
   manifest: "/manifest.json",
