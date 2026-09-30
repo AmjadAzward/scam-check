@@ -28,15 +28,15 @@ const config: Config = {
         },
         surface: {
           DEFAULT: "#FFFFFF",
-          muted: "#F5F8FC",
-          subtle: "#EDF3F8",
-          border: "#DCE5EE",
-          borderSubtle: "#E9EFF5",
+          muted: "#F3F6FA",
+          subtle: "#E8EEF5",
+          border: "#C9D5E2",
+          borderSubtle: "#DCE5EE",
         },
         text: {
           primary: "#132238",
-          secondary: "#5D6B7E",
-          tertiary: "#8A98A9",
+          secondary: "#4B5D73",
+          tertiary: "#718096",
         },
         risk: {
           low: "#157A55",
@@ -57,9 +57,9 @@ const config: Config = {
         card: "14px",
       },
       boxShadow: {
-        soft: "0 2px 8px rgba(16, 42, 67, 0.06)",
-        card: "0 10px 30px -18px rgba(16, 42, 67, 0.28), 0 2px 8px rgba(16, 42, 67, 0.04)",
-        elevated: "0 20px 45px -18px rgba(16, 42, 67, 0.30), 0 8px 18px -12px rgba(37, 99, 235, 0.20)",
+        soft: "0 3px 10px rgba(16, 42, 67, 0.10)",
+        card: "0 14px 34px -20px rgba(16, 42, 67, 0.38), 0 3px 10px rgba(16, 42, 67, 0.07)",
+        elevated: "0 22px 48px -18px rgba(16, 42, 67, 0.42), 0 10px 22px -14px rgba(37, 99, 235, 0.26)",
       },
       fontFamily: {
         sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],

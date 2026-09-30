@@ -66,7 +66,7 @@ export default function HomePage() {
       icon: ImageIcon,
       href: "/check/screenshot",
       badge: "Popular",
-      iconStyle: "bg-blue-50 text-blue-600 ring-blue-100",
+      iconStyle: "bg-blue-600 text-white ring-blue-700/20 shadow-soft",
     },
     {
       title: t("actions.pasteMessage"),
@@ -74,21 +74,21 @@ export default function HomePage() {
       icon: MessageSquare,
       href: "/check/message",
       badge: "Fastest",
-      iconStyle: "bg-teal-50 text-teal-700 ring-teal-100",
+      iconStyle: "bg-teal-700 text-white ring-teal-800/20 shadow-soft",
     },
     {
       title: t("actions.checkLink"),
       desc: t("actions.checkLinkDesc"),
       icon: Link2,
       href: "/check/link",
-      iconStyle: "bg-violet-50 text-violet-600 ring-violet-100",
+      iconStyle: "bg-violet-600 text-white ring-violet-700/20 shadow-soft",
     },
     {
       title: t("actions.checkNumber"),
       desc: t("actions.checkNumberDesc"),
       icon: Phone,
       href: "/check/phone",
-      iconStyle: "bg-amber-50 text-amber-700 ring-amber-100",
+      iconStyle: "bg-amber-600 text-white ring-amber-700/20 shadow-soft",
     },
   ];
 
@@ -98,7 +98,7 @@ export default function HomePage() {
       <section className="relative overflow-hidden text-center space-y-5 px-5 py-10 sm:px-10 sm:py-14 rounded-[2rem] bg-surface border border-surface-border shadow-card">
         <div className="absolute -top-20 -left-16 w-56 h-56 rounded-full bg-trust-subtle/80 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -right-12 w-64 h-64 rounded-full bg-accent-subtle/80 blur-3xl pointer-events-none" />
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-trust-subtle text-trust text-xs font-semibold tracking-wide border border-trust/10">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary text-white text-xs font-semibold tracking-wide border border-primary shadow-soft">
           <ShieldCheck className="w-3.5 h-3.5" />
           <span>{t("app.tagline")}</span>
         </div>
@@ -126,14 +126,14 @@ export default function HomePage() {
               <Link
                 key={idx}
                 href={action.href}
-                className="group relative p-6 rounded-2xl bg-surface border border-surface-border hover:border-trust/40 hover:-translate-y-0.5 hover:shadow-elevated transition-all duration-200 flex flex-col justify-between touch-target active:scale-[0.99]"
+                className="group relative p-6 rounded-2xl bg-surface border-2 border-surface-border hover:border-trust hover:-translate-y-0.5 hover:shadow-elevated transition-all duration-200 flex flex-col justify-between touch-target active:scale-[0.99]"
               >
                 <div className="flex items-start justify-between">
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center ring-1 group-hover:scale-105 transition-transform ${action.iconStyle}`}>
                     <Icon className="w-6 h-6 stroke-[2]" />
                   </div>
                   {action.badge && (
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-surface-muted text-text-secondary border border-surface-border">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary text-white border border-primary">
                       {action.badge}
                     </span>
                   )}

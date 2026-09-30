@@ -8,13 +8,13 @@
   --primary-navy: #102A43;
   --trust-blue: #2563EB;
   --safety-teal: #0F8B8D;
-  --bg-color: #F5F8FC;
+  --bg-color: #F3F6FA;
   --surface: #FFFFFF;
   --text-primary: #132238;
-  --text-secondary: #5D6B7E;
+  --text-secondary: #4B5D73;
 }
 
-* { border-color: #DCE5EE; }
+* { border-color: #C9D5E2; }
 
 html { background: var(--bg-color); }
 

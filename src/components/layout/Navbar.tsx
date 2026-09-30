@@ -37,7 +37,7 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-surface/85 backdrop-blur-xl border-b border-surface-border/80 shadow-[0_1px_12px_rgba(16,42,67,0.04)]">
+    <header className="sticky top-0 z-40 bg-surface/95 backdrop-blur-xl border-b border-surface-border shadow-[0_3px_16px_rgba(16,42,67,0.10)]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
@@ -113,8 +113,8 @@ export default function Navbar() {
               onClick={() => setLangDropdownOpen(!langDropdownOpen)}
               className={`group relative w-11 h-11 flex items-center justify-center transition-all touch-target ${
                 langDropdownOpen
-                  ? "text-trust"
-                  : "text-trust hover:text-trust-hover"
+                  ? "text-primary"
+                  : "text-blue-700 hover:text-primary"
               }`}
               aria-label={`Language: ${languages.find((l) => l.code === language)?.label}. Change language`}
               aria-expanded={langDropdownOpen}
@@ -152,7 +152,7 @@ export default function Navbar() {
             <div className="hidden sm:flex items-center gap-2">
               <Link
                 href="/settings"
-                className="group relative w-11 h-11 flex items-center justify-center text-accent hover:text-accent-hover transition-all"
+                className="group relative w-11 h-11 flex items-center justify-center text-teal-800 hover:text-primary transition-all"
                 title={t("settings.title")}
                 aria-label={t("settings.title")}
               >
@@ -163,7 +163,7 @@ export default function Navbar() {
               </Link>
               <button
                 onClick={() => signOut({ callbackUrl: "/" })}
-                className="group relative w-11 h-11 flex items-center justify-center text-risk-high hover:text-risk-critical transition-all"
+                className="group relative w-11 h-11 flex items-center justify-center text-red-700 hover:text-risk-critical transition-all"
                 title={t("nav.logout")}
                 aria-label={t("nav.logout")}
               >
