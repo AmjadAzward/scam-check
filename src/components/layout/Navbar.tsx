@@ -26,6 +26,7 @@ export default function Navbar() {
   const { language, setLanguage, t } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+  const [signOutConfirmationOpen, setSignOutConfirmationOpen] = useState(false);
 
   const userRole = (session?.user as any)?.role;
   const isStaff = userRole === "ADMIN" || userRole === "MODERATOR";
@@ -37,6 +38,7 @@ export default function Navbar() {
   ];
 
   return (
+    <>
     <header className="glass-nav sticky top-0 z-40 border-b shadow-[0_3px_20px_rgba(16,42,67,0.10)]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Brand Logo */}
@@ -162,7 +164,7 @@ export default function Navbar() {
                 </span>
               </Link>
               <button
-                onClick={() => signOut({ callbackUrl: "/" })}
+                onClick={() => setSignOutConfirmationOpen(true)}
                 className="group relative w-11 h-11 flex items-center justify-center text-red-700 hover:text-risk-critical transition-all"
                 title={t("nav.logout")}
                 aria-label={t("nav.logout")}
@@ -265,7 +267,7 @@ export default function Navbar() {
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
-                  signOut({ callbackUrl: "/" });
+                  setSignOutConfirmationOpen(true);
                 }}
                 className="w-full text-left px-3 py-2 text-sm font-medium text-risk-high rounded-lg hover:bg-risk-high-bg flex items-center gap-2"
               >
@@ -293,6 +295,52 @@ export default function Navbar() {
           </div>
         </div>
       )}
+
     </header>
+
+      {signOutConfirmationOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-primary/35 px-4 backdrop-blur-sm"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setSignOutConfirmationOpen(false);
+          }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="signout-dialog-title"
+            aria-describedby="signout-dialog-description"
+            className="glass-surface w-full max-w-sm rounded-3xl p-6 text-center shadow-elevated"
+          >
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-risk-high-bg text-risk-high">
+              <LogOut className="h-5 w-5" />
+            </div>
+            <h2 id="signout-dialog-title" className="text-lg font-extrabold text-primary">
+              Sign out of ScamCheck?
+            </h2>
+            <p id="signout-dialog-description" className="mt-2 text-sm leading-relaxed text-text-secondary">
+              You will need to sign in again to view saved checks, submit reports, and manage your privacy settings.
+            </p>
+            <div className="mt-6 grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setSignOutConfirmationOpen(false)}
+                className="min-h-11 rounded-xl border border-surface-border bg-white px-4 text-sm font-bold text-text-primary transition-colors hover:bg-surface-muted"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="min-h-11 rounded-xl bg-risk-high px-4 text-sm font-bold text-white shadow-soft transition-colors hover:bg-risk-critical"
+              >
+                Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
