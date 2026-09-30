@@ -1,0 +1,9 @@
+{
+  "name": "ScamCheck",
+  "short_name": "ScamCheck",
+  "description": "Check suspicious messages, links, phone numbers and QR codes before you act.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F8FC",
+  "theme_color": "#102A43"
+}

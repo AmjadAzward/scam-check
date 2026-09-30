@@ -21,7 +21,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#142357",
+  themeColor: "#102A43",
 };
 
 export default function RootLayout({
@@ -31,11 +31,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen flex flex-col bg-[#F7F8FA] text-[#172033] antialiased selection:bg-trust-subtle selection:text-trust">
+      <body className="min-h-screen flex flex-col text-text-primary antialiased selection:bg-trust-subtle selection:text-primary">
         <SessionWrapper>
           <LanguageProvider>
             <Navbar />
-            <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 md:py-8">
+            <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-7 md:py-10">
               {children}
             </main>
             <Footer />

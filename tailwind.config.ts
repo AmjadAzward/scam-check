@@ -10,27 +10,33 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#142357",
-          hover: "#0e193f",
-          light: "#1c327a",
+          DEFAULT: "#102A43",
+          hover: "#0B2136",
+          light: "#1F4567",
         },
         trust: {
-          DEFAULT: "#3157D5",
-          hover: "#2544a8",
-          subtle: "#eef2fd",
-          muted: "#8ea4ee",
+          DEFAULT: "#2563EB",
+          hover: "#1D4ED8",
+          subtle: "#EFF6FF",
+          muted: "#93B4F4",
+        },
+        accent: {
+          DEFAULT: "#0F8B8D",
+          hover: "#0B7375",
+          subtle: "#EAF8F7",
+          muted: "#72C9C7",
         },
         surface: {
           DEFAULT: "#FFFFFF",
-          muted: "#F7F8FA",
-          subtle: "#F0F2F5",
-          border: "#E4E7EC",
-          borderSubtle: "#EDF0F4",
+          muted: "#F5F8FC",
+          subtle: "#EDF3F8",
+          border: "#DCE5EE",
+          borderSubtle: "#E9EFF5",
         },
         text: {
-          primary: "#172033",
-          secondary: "#667085",
-          tertiary: "#98A2B3",
+          primary: "#132238",
+          secondary: "#5D6B7E",
+          tertiary: "#8A98A9",
         },
         risk: {
           low: "#157A55",
@@ -51,9 +57,9 @@ const config: Config = {
         card: "14px",
       },
       boxShadow: {
-        soft: "0 1px 3px rgba(16, 24, 40, 0.05), 0 1px 2px rgba(16, 24, 40, 0.03)",
-        card: "0 2px 8px -2px rgba(16, 24, 40, 0.06), 0 1px 4px -1px rgba(16, 24, 40, 0.04)",
-        elevated: "0 8px 24px -4px rgba(16, 24, 40, 0.08), 0 4px 12px -2px rgba(16, 24, 40, 0.04)",
+        soft: "0 2px 8px rgba(16, 42, 67, 0.06)",
+        card: "0 10px 30px -18px rgba(16, 42, 67, 0.28), 0 2px 8px rgba(16, 42, 67, 0.04)",
+        elevated: "0 20px 45px -18px rgba(16, 42, 67, 0.30), 0 8px 18px -12px rgba(37, 99, 235, 0.20)",
       },
       fontFamily: {
         sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],

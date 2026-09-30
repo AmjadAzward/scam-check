@@ -13,7 +13,7 @@ export default function MobileNav() {
   const { data: session } = useSession();
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur border-t border-surface-border safe-area-bottom">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface/90 backdrop-blur-xl border-t border-surface-border/80 shadow-[0_-8px_30px_rgba(16,42,67,0.08)] safe-area-bottom">
       <div className="flex items-center justify-around h-16 px-2 max-w-lg mx-auto">
         {/* Home */}
         <Link
@@ -42,9 +42,9 @@ export default function MobileNav() {
           <Link
             href="/check"
             aria-label={t("nav.check")}
-            className="w-14 h-14 rounded-full bg-trust hover:bg-trust-hover text-white shadow-elevated flex items-center justify-center transition-transform active:scale-95 border-4 border-surface"
+            className="w-14 h-14 rounded-2xl rotate-45 bg-trust hover:bg-trust-hover text-white shadow-elevated flex items-center justify-center transition-transform active:scale-95 border-4 border-surface"
           >
-            <Search className="w-6 h-6 stroke-[2.5]" />
+            <Search className="w-6 h-6 stroke-[2.5] -rotate-45" />
           </Link>
         </div>
 

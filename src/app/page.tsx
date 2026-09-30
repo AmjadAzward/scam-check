@@ -66,6 +66,7 @@ export default function HomePage() {
       icon: ImageIcon,
       href: "/check/screenshot",
       badge: "Popular",
+      iconStyle: "bg-blue-50 text-blue-600 ring-blue-100",
     },
     {
       title: t("actions.pasteMessage"),
@@ -73,37 +74,47 @@ export default function HomePage() {
       icon: MessageSquare,
       href: "/check/message",
       badge: "Fastest",
+      iconStyle: "bg-teal-50 text-teal-700 ring-teal-100",
     },
     {
       title: t("actions.checkLink"),
       desc: t("actions.checkLinkDesc"),
       icon: Link2,
       href: "/check/link",
+      iconStyle: "bg-violet-50 text-violet-600 ring-violet-100",
     },
     {
       title: t("actions.checkNumber"),
       desc: t("actions.checkNumberDesc"),
       icon: Phone,
       href: "/check/phone",
+      iconStyle: "bg-amber-50 text-amber-700 ring-amber-100",
     },
   ];
 
   return (
-    <div className="space-y-12 max-w-4xl mx-auto">
+    <div className="space-y-10 max-w-4xl mx-auto">
       {/* Hero Section */}
-      <section className="text-center space-y-4 pt-4 sm:pt-8">
+      <section className="relative overflow-hidden text-center space-y-5 px-5 py-10 sm:px-10 sm:py-14 rounded-[2rem] bg-surface border border-surface-border shadow-card">
+        <div className="absolute -top-20 -left-16 w-56 h-56 rounded-full bg-trust-subtle/80 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -right-12 w-64 h-64 rounded-full bg-accent-subtle/80 blur-3xl pointer-events-none" />
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-trust-subtle text-trust text-xs font-semibold tracking-wide border border-trust/10">
           <ShieldCheck className="w-3.5 h-3.5" />
           <span>{t("app.tagline")}</span>
         </div>
 
-        <h1 className="text-4xl sm:text-5xl font-extrabold text-primary tracking-tight">
+        <h1 className="relative text-4xl sm:text-6xl font-extrabold text-primary tracking-[-0.035em] leading-[1.05]">
           {t("app.isThisSafe")}
         </h1>
 
-        <p className="text-base sm:text-lg text-text-secondary max-w-xl mx-auto leading-relaxed">
+        <p className="relative text-base sm:text-lg text-text-secondary max-w-xl mx-auto leading-relaxed">
           {t("app.subtitle")}
         </p>
+        <div className="relative flex flex-wrap items-center justify-center gap-x-5 gap-y-2 pt-1 text-[11px] font-semibold text-text-secondary">
+          <span className="inline-flex items-center gap-1.5"><Lock className="w-3.5 h-3.5 text-accent" /> Private by design</span>
+          <span className="inline-flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5 text-trust" /> Clear explanations</span>
+          <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-risk-low" /> No links opened</span>
+        </div>
       </section>
 
       {/* 4 Large Primary Actions + 5th QR Option */}
@@ -115,10 +126,10 @@ export default function HomePage() {
               <Link
                 key={idx}
                 href={action.href}
-                className="group relative p-6 rounded-2xl bg-surface border border-surface-border hover:border-trust hover:shadow-card transition-all duration-200 flex flex-col justify-between touch-target active:scale-[0.99]"
+                className="group relative p-6 rounded-2xl bg-surface border border-surface-border hover:border-trust/40 hover:-translate-y-0.5 hover:shadow-elevated transition-all duration-200 flex flex-col justify-between touch-target active:scale-[0.99]"
               >
                 <div className="flex items-start justify-between">
-                  <div className="w-12 h-12 rounded-xl bg-trust-subtle text-trust flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ring-1 group-hover:scale-105 transition-transform ${action.iconStyle}`}>
                     <Icon className="w-6 h-6 stroke-[2]" />
                   </div>
                   {action.badge && (
@@ -145,22 +156,22 @@ export default function HomePage() {
         {/* 5th Action: Scan QR Code */}
         <Link
           href="/check/qr"
-          className="group p-4 sm:p-5 rounded-2xl bg-surface border border-surface-border hover:border-trust hover:shadow-soft transition-all duration-200 flex items-center justify-between touch-target active:scale-[0.99]"
+          className="group p-4 sm:p-5 rounded-2xl bg-primary text-white border border-primary-light hover:-translate-y-0.5 hover:shadow-elevated transition-all duration-200 flex items-center justify-between touch-target active:scale-[0.99]"
         >
           <div className="flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-xl bg-surface-muted text-trust flex items-center justify-center group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-white/10 text-cyan-200 flex items-center justify-center group-hover:scale-105 transition-transform ring-1 ring-white/10">
               <QrCode className="w-5 h-5 stroke-[2]" />
             </div>
             <div>
-              <div className="text-sm font-bold text-text-primary group-hover:text-trust transition-colors">
+              <div className="text-sm font-bold text-white transition-colors">
                 {t("actions.scanQr")}
               </div>
-              <p className="text-xs text-text-secondary">
+              <p className="text-xs text-blue-100/75">
                 {t("actions.scanQrDesc")}
               </p>
             </div>
           </div>
-          <ArrowRight className="w-4 h-4 text-text-tertiary group-hover:text-trust group-hover:translate-x-1 transition-all" />
+          <ArrowRight className="w-4 h-4 text-blue-100 group-hover:translate-x-1 transition-all" />
         </Link>
       </section>
 

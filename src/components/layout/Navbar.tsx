@@ -37,16 +37,16 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-surface/95 backdrop-blur border-b border-surface-border">
+    <header className="sticky top-0 z-40 bg-surface/85 backdrop-blur-xl border-b border-surface-border/80 shadow-[0_1px_12px_rgba(16,42,67,0.04)]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-soft transition-transform group-hover:scale-105">
-            <ShieldCheck className="w-6 h-6 text-trust-subtle" />
+          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-[0_7px_18px_rgba(16,42,67,0.22)] transition-transform group-hover:scale-105">
+            <ShieldCheck className="w-6 h-6 text-[#7DD3FC]" />
           </div>
           <div className="flex flex-col">
             <span className="text-xl font-bold tracking-tight text-primary leading-none">
-              Scam<span className="text-trust">Check</span>
+              Scam<span className="text-accent">Check</span>
             </span>
             <span className="text-[10px] font-medium text-text-secondary mt-0.5 tracking-wide">
               DIGITAL SAFETY
