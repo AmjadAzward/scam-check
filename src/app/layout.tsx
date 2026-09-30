@@ -12,7 +12,8 @@ export const metadata: Metadata = {
     "Evaluate suspicious messages, screenshots, links, phone numbers and QR codes before you click, pay or reply. Consumer digital safety platform.",
   manifest: "/manifest.json",
   icons: {
-    icon: "/favicon.ico",
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    shortcut: "/icon.svg",
   },
 };
 
