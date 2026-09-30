@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -49,7 +50,7 @@ model Scan {
   status      String       @default("COMPLETED") // "COMPLETED" | "PROCESSING" | "FAILED"
   riskLevel   String       // "LOW_RISK" | "MEDIUM_RISK" | "HIGH_RISK" | "KNOWN_MALICIOUS"
   riskScore   Int          // 0 - 100
-  summary     String
+  summary     String       @db.Text
   language    String       @default("en")
   isSaved     Boolean      @default(false)
   claimedOrg  String?
@@ -70,7 +71,7 @@ model ScanInput {
   scanId     String
   scan       Scan     @relation(fields: [scanId], references: [id], onDelete: Cascade)
   inputType  String   // "TEXT" | "IMAGE" | "URL" | "PHONE" | "QR_IMAGE" | "QR_DESTINATION"
-  text       String?
+  text       String?  @db.Text
   storageKey String?
   mimeType   String?
   createdAt  DateTime @default(now())
@@ -86,8 +87,8 @@ model RiskSignal {
   score       Int      // 0 - 100
   confidence  Int      // 0 - 100
   title       String
-  description String
-  evidence    String?
+  description String   @db.Text
+  evidence    String?  @db.Text
   source      String
   createdAt   DateTime @default(now())
 
@@ -102,14 +103,14 @@ model CommunityReport {
   identifierValueHash String   // SHA256 of normalized value
   displayValueMasked  String   // Masked for privacy
   category            String   // "Courier Scam", "Banking Scam", etc.
-  description         String
+  description         String   @db.Text
   platform            String?  // "WhatsApp", "SMS", "Facebook Marketplace", etc.
   amountLost          Float?
   currency            String   @default("LKR")
   evidenceStorageKey  String?
   dateEncountered     DateTime @default(now())
   status              String   @default("PENDING") // "PENDING" | "VISIBLE" | "UNDER_REVIEW" | "REJECTED" | "CONFIRMED_BY_MODERATOR"
-  moderatorNotes      String?
+  moderatorNotes      String?  @db.Text
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
@@ -122,7 +123,7 @@ model CommunityReport {
 model Brand {
   id                 String        @id @default(cuid())
   name               String        @unique
-  aliases            String        // Comma-separated or JSON
+  aliases            String        @db.Text // Comma-separated or JSON
   country            String        @default("LK")
   verificationStatus String        @default("VERIFIED") // "VERIFIED" | "UNVERIFIED"
   domains            BrandDomain[]
@@ -160,7 +161,7 @@ model AuditLog {
   userId    String?
   user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   action    String
-  metadata  String?  // JSON string
+  metadata  String?  @db.Text // JSON string
   createdAt DateTime @default(now())
 
   @@index([userId])

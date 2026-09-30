@@ -18,7 +18,7 @@ ScamCheck never treats community reports alone as authoritative proof and does n
 
 ## Stack
 
-Next.js 14 App Router, TypeScript, Tailwind CSS, Auth.js/NextAuth, Prisma, Zod, OpenAI (optional), and SQLite for local development. A PostgreSQL Prisma schema is included for deployment.
+Next.js 14 App Router, TypeScript, Tailwind CSS, Auth.js/NextAuth, Prisma, Zod, OpenAI (optional), and Supabase PostgreSQL.
 
 ## Local setup
 
@@ -28,17 +28,17 @@ Next.js 14 App Router, TypeScript, Tailwind CSS, Auth.js/NextAuth, Prisma, Zod, 
    npm install
    ```
 
-2. Copy `.env.example` to `.env`. Replace `NEXTAUTH_SECRET` with a long random value. The default local database setting is:
+2. Copy `.env.example` to `.env`. Replace `NEXTAUTH_SECRET` with a long random value and add the Supabase transaction and session pooler URLs:
 
    ```env
-   DATABASE_URL="file:./dev.db"
+   DATABASE_URL="postgresql://...:6543/postgres?pgbouncer=true"
+   DIRECT_URL="postgresql://...:5432/postgres"
    ```
 
-3. Generate the Prisma client and create the local database:
+3. Import `supabase/scamcheck-schema.sql` once through the Supabase SQL Editor, then generate and seed:
 
    ```bash
    npm run prisma:generate
-   npm run prisma:push
    npm run prisma:seed
    ```
 
@@ -68,16 +68,9 @@ Do not use seeded credentials in a public environment.
 - Set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` to enable Google login.
 - Local development stores uploads in the non-public `private_uploads` directory and serves them through expiring signed routes. Configure private S3/R2 storage before a multi-instance production deployment.
 
-## PostgreSQL deployment
+## Supabase deployment
 
-`prisma/schema.postgresql.prisma` is the production-oriented schema. Point `DATABASE_URL` at PostgreSQL and generate/migrate using that schema, for example:
-
-```bash
-npx prisma generate --schema prisma/schema.postgresql.prisma
-npx prisma migrate deploy --schema prisma/schema.postgresql.prisma
-```
-
-Use a proper migration history for the target environment before deployment. Keep uploads private, use HTTPS, provide production OAuth callback URLs, and set strong secrets through the host's secret manager.
+The primary Prisma schema targets Supabase PostgreSQL. Runtime traffic uses the transaction pooler in `DATABASE_URL`; schema and seed operations use the session connection in `DIRECT_URL`. Keep uploads private, use HTTPS, provide production OAuth callback URLs, and configure secrets through the hosting provider's secret manager.
 
 ## Verification
 
