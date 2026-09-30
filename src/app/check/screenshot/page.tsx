@@ -28,7 +28,7 @@ export default function ScreenshotPage() {
         </div>
       </div>
 
-      <div className="p-6 sm:p-8 rounded-3xl bg-surface border border-surface-border shadow-card">
+      <div className="glass-surface p-6 sm:p-8 rounded-3xl">
         <ScreenshotChecker />
       </div>
     </div>

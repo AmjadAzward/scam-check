@@ -37,7 +37,7 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-surface/95 backdrop-blur-xl border-b border-surface-border shadow-[0_3px_16px_rgba(16,42,67,0.10)]">
+    <header className="glass-nav sticky top-0 z-40 border-b shadow-[0_3px_20px_rgba(16,42,67,0.10)]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">

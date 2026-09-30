@@ -95,7 +95,7 @@ export default function HomePage() {
   return (
     <div className="space-y-10 max-w-4xl mx-auto">
       {/* Hero Section */}
-      <section className="relative overflow-hidden text-center space-y-5 px-5 py-10 sm:px-10 sm:py-14 rounded-[2rem] bg-surface border border-surface-border shadow-card">
+      <section className="glass-surface relative overflow-hidden text-center space-y-5 px-5 py-10 sm:px-10 sm:py-14 rounded-[2rem]">
         <div className="absolute -top-20 -left-16 w-56 h-56 rounded-full bg-trust-subtle/80 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -right-12 w-64 h-64 rounded-full bg-accent-subtle/80 blur-3xl pointer-events-none" />
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary text-white text-xs font-semibold tracking-wide border border-primary shadow-soft">
@@ -126,7 +126,7 @@ export default function HomePage() {
               <Link
                 key={idx}
                 href={action.href}
-                className="group relative p-6 rounded-2xl bg-surface border-2 border-surface-border hover:border-trust hover:-translate-y-0.5 hover:shadow-elevated transition-all duration-200 flex flex-col justify-between touch-target active:scale-[0.99]"
+                className="glass-surface group relative p-6 rounded-2xl hover:border-trust/60 hover:-translate-y-1 hover:shadow-elevated transition-all duration-200 flex flex-col justify-between touch-target active:scale-[0.99]"
               >
                 <div className="flex items-start justify-between">
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center ring-1 group-hover:scale-105 transition-transform ${action.iconStyle}`}>
@@ -223,7 +223,7 @@ export default function HomePage() {
               <Link
                 key={check.id}
                 href={`/result/${check.id}`}
-                className="p-4 rounded-xl bg-surface border border-surface-border hover:border-surface-border/90 hover:shadow-soft transition-all flex items-center justify-between gap-4 group"
+                className="glass-surface p-4 rounded-xl hover:border-trust/40 hover:shadow-card transition-all flex items-center justify-between gap-4 group"
               >
                 <div className="space-y-1 min-w-0">
                   <div className="text-sm font-semibold text-text-primary group-hover:text-trust transition-colors truncate">
@@ -263,7 +263,7 @@ export default function HomePage() {
       </section>
 
       {/* How It Works Educational Cards */}
-      <section className="p-6 sm:p-8 rounded-3xl bg-surface border border-surface-border shadow-soft space-y-6">
+      <section className="glass-surface p-6 sm:p-8 rounded-3xl space-y-6">
         <div className="text-center space-y-1">
           <h3 className="text-lg font-bold text-text-primary">
             {t("home.howItWorks")}

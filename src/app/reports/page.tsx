@@ -160,7 +160,7 @@ export default function ReportsPage() {
           reports.map((report) => (
             <div
               key={report.id}
-              className="p-5 rounded-2xl bg-surface border border-surface-border shadow-soft space-y-3 hover:border-surface-border/90 transition-all"
+              className="glass-surface p-5 rounded-2xl space-y-3 hover:border-trust/40 hover:-translate-y-0.5 transition-all"
             >
               <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-surface-border/60">
                 <div className="flex items-center gap-2">

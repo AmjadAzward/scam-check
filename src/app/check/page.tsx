@@ -45,7 +45,7 @@ function CheckHubContent() {
       </div>
 
       {/* Tabs Bar */}
-      <div className="flex overflow-x-auto no-scrollbar gap-1.5 p-1 rounded-2xl bg-surface border border-surface-border shadow-soft">
+      <div className="glass-surface flex overflow-x-auto no-scrollbar gap-1.5 p-1 rounded-2xl">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -67,7 +67,7 @@ function CheckHubContent() {
       </div>
 
       {/* Active Tab Panel */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-surface border border-surface-border shadow-card">
+      <div className="glass-surface p-6 sm:p-8 rounded-3xl">
         {activeTab === "message" && <MessageChecker />}
         {activeTab === "screenshot" && <ScreenshotChecker />}
         {activeTab === "link" && <LinkChecker />}

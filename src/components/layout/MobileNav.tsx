@@ -13,7 +13,7 @@ export default function MobileNav() {
   const { data: session } = useSession();
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface/90 backdrop-blur-xl border-t border-surface-border/80 shadow-[0_-8px_30px_rgba(16,42,67,0.08)] safe-area-bottom">
+    <nav className="glass-nav md:hidden fixed bottom-0 left-0 right-0 z-40 border-t shadow-[0_-8px_30px_rgba(16,42,67,0.12)] safe-area-bottom">
       <div className="flex items-center justify-around h-16 px-2 max-w-lg mx-auto">
         {/* Home */}
         <Link

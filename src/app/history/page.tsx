@@ -111,7 +111,7 @@ export default function HistoryPage() {
             <Link
               key={scan.id}
               href={`/result/${scan.id}`}
-              className="p-4 sm:p-5 rounded-2xl bg-surface border border-surface-border hover:border-surface-border/80 hover:shadow-soft transition-all flex items-center justify-between gap-4 group"
+              className="glass-surface p-4 sm:p-5 rounded-2xl hover:border-trust/40 hover:-translate-y-0.5 transition-all flex items-center justify-between gap-4 group"
             >
               <div className="space-y-1 min-w-0">
                 <div className="flex items-center gap-2">

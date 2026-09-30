@@ -61,7 +61,7 @@ export default function LoginPage() {
         </p>
       </div>
 
-      <div className="p-6 sm:p-8 rounded-3xl bg-surface border border-surface-border shadow-card space-y-5">
+      <div className="glass-surface p-6 sm:p-8 rounded-3xl space-y-5">
         {error && (
           <div className="p-3.5 rounded-xl bg-risk-high-bg border border-risk-high-border text-risk-high flex items-center gap-2.5 text-xs font-semibold">
             <AlertCircle className="w-4 h-4 shrink-0" />
