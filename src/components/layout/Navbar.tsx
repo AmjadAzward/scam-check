@@ -64,14 +64,16 @@ export default function Navbar() {
           >
             {t("nav.home")}
           </Link>
-          <Link
-            href="/history"
-            className={`px-3 py-2 rounded-lg transition-colors hover:text-text-primary hover:bg-surface-muted ${
-              pathname.startsWith("/history") ? "text-trust font-semibold bg-trust-subtle/50" : ""
-            }`}
-          >
-            {t("nav.checks")}
-          </Link>
+          {session?.user && (
+            <Link
+              href="/history"
+              className={`px-3 py-2 rounded-lg transition-colors hover:text-text-primary hover:bg-surface-muted ${
+                pathname.startsWith("/history") ? "text-trust font-semibold bg-trust-subtle/50" : ""
+              }`}
+            >
+              {t("nav.checks")}
+            </Link>
+          )}
           <Link
             href="/reports"
             className={`px-3 py-2 rounded-lg transition-colors hover:text-text-primary hover:bg-surface-muted ${
@@ -200,13 +202,15 @@ export default function Navbar() {
           >
             {t("actions.checkSomething")}
           </Link>
-          <Link
-            href="/history"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block px-3 py-2 rounded-lg text-sm font-medium text-text-primary hover:bg-surface-muted"
-          >
-            {t("nav.checks")}
-          </Link>
+          {session?.user && (
+            <Link
+              href="/history"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 rounded-lg text-sm font-medium text-text-primary hover:bg-surface-muted"
+            >
+              {t("nav.checks")}
+            </Link>
+          )}
           <Link
             href="/reports"
             onClick={() => setMobileMenuOpen(false)}
@@ -221,13 +225,15 @@ export default function Navbar() {
           >
             {t("actions.iAlreadyClicked")}
           </Link>
-          <Link
-            href="/settings"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block px-3 py-2 rounded-lg text-sm font-medium text-text-primary hover:bg-surface-muted"
-          >
-            {t("settings.title")}
-          </Link>
+          {session?.user && (
+            <Link
+              href="/settings"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 rounded-lg text-sm font-medium text-text-primary hover:bg-surface-muted"
+            >
+              {t("settings.title")}
+            </Link>
+          )}
           {isStaff && (
             <Link
               href="/admin"

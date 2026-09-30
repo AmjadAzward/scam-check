@@ -5,10 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Shield, Search, FileText, User } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/context";
+import { useSession } from "next-auth/react";
 
 export default function MobileNav() {
   const pathname = usePathname();
   const { t } = useLanguage();
+  const { data: session } = useSession();
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur border-t border-surface-border safe-area-bottom">
@@ -26,7 +28,7 @@ export default function MobileNav() {
 
         {/* Checks */}
         <Link
-          href="/history"
+          href={session?.user ? "/history" : "/auth/login?callbackUrl=/history"}
           className={`flex flex-col items-center justify-center flex-1 py-1 touch-target transition-colors ${
             pathname.startsWith("/history") ? "text-trust font-semibold" : "text-text-secondary hover:text-text-primary"
           }`}
@@ -59,13 +61,13 @@ export default function MobileNav() {
 
         {/* Profile / Settings */}
         <Link
-          href="/settings"
+          href={session?.user ? "/settings" : "/auth/login?callbackUrl=/settings"}
           className={`flex flex-col items-center justify-center flex-1 py-1 touch-target transition-colors ${
             pathname.startsWith("/settings") ? "text-trust font-semibold" : "text-text-secondary hover:text-text-primary"
           }`}
         >
           <User className="w-5 h-5" />
-          <span className="text-[11px] mt-1">{t("nav.profile")}</span>
+          <span className="text-[11px] mt-1">{session?.user ? t("nav.profile") : t("nav.login")}</span>
         </Link>
       </div>
     </nav>

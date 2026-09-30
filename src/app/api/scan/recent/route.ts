@@ -10,16 +10,21 @@ export async function GET(req: Request) {
     const session = await getServerSession(authOptions);
     const userId = (session?.user as any)?.id;
 
+    if (!userId) {
+      return NextResponse.json(
+        { error: "Sign in to view your checks" },
+        { status: 401 }
+      );
+    }
+
     const { searchParams } = new URL(req.url);
     const filter = searchParams.get("filter"); // "all" | "saved" | "mine"
     const limit = parseInt(searchParams.get("limit") || "10", 10);
 
-    let whereClause: any = {};
+    let whereClause: any = { userId };
 
-    if (filter === "saved" && userId) {
+    if (filter === "saved") {
       whereClause = { userId, isSaved: true };
-    } else if (filter === "mine" && userId) {
-      whereClause = { userId };
     }
 
     const scans = await prisma.scan.findMany({

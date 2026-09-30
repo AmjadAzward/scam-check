@@ -20,11 +20,13 @@ import RiskReasonsList from "@/components/risk/RiskReasonsList";
 import RecommendedActions from "@/components/risk/RecommendedActions";
 import TechnicalDetails from "@/components/risk/TechnicalDetails";
 import { useLanguage } from "@/lib/i18n/context";
+import { useSession } from "next-auth/react";
 
 export default function RiskResultPage() {
   const params = useParams();
   const router = useRouter();
   const { t } = useLanguage();
+  const { data: session } = useSession();
   const scanId = params.id as string;
 
   const [scan, setScan] = useState<any>(null);
@@ -52,6 +54,10 @@ export default function RiskResultPage() {
   }, [scanId]);
 
   const handleToggleSave = async () => {
+    if (!session?.user) {
+      router.push(`/auth/login?callbackUrl=${encodeURIComponent(`/result/${scanId}`)}`);
+      return;
+    }
     setIsSaving(true);
     try {
       const res = await fetch(`/api/scan/${scanId}`, {

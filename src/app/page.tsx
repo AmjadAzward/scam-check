@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/context";
 import RiskBadge from "@/components/risk/RiskBadge";
+import { useSession } from "next-auth/react";
 
 interface RecentCheck {
   id: string;
@@ -30,10 +31,18 @@ interface RecentCheck {
 
 export default function HomePage() {
   const { t } = useLanguage();
+  const { data: session, status: sessionStatus } = useSession();
   const [recentChecks, setRecentChecks] = useState<RecentCheck[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (sessionStatus === "loading") return;
+    if (!session?.user) {
+      setRecentChecks([]);
+      setIsLoading(false);
+      return;
+    }
+
     async function loadRecent() {
       try {
         const res = await fetch("/api/scan/recent?limit=4");
@@ -48,7 +57,7 @@ export default function HomePage() {
       }
     }
     loadRecent();
-  }, []);
+  }, [session, sessionStatus]);
 
   const primaryActions = [
     {
@@ -223,9 +232,20 @@ export default function HomePage() {
                 </div>
               </Link>
             ))
+          ) : isLoading ? (
+            <div className="p-8 text-center bg-surface rounded-2xl border border-surface-border text-xs text-text-secondary">
+              Loading your recent checks...
+            </div>
+          ) : !session?.user ? (
+            <div className="p-8 text-center bg-surface rounded-2xl border border-surface-border space-y-3">
+              <p className="text-xs text-text-secondary">Sign in to save checks and view your private history.</p>
+              <Link href="/auth/login?callbackUrl=/" className="inline-flex px-4 py-2 rounded-xl bg-trust text-white text-xs font-semibold">
+                Sign In
+              </Link>
+            </div>
           ) : (
             <div className="p-8 text-center bg-surface rounded-2xl border border-surface-border text-xs text-text-secondary">
-              Loading recent community intelligence checks...
+              You have no checks yet.
             </div>
           )}
         </div>

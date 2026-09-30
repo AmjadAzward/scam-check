@@ -15,6 +15,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/context";
+import { useSession } from "next-auth/react";
 
 interface ReportItem {
   id: string;
@@ -32,6 +33,7 @@ interface ReportItem {
 
 export default function ReportsPage() {
   const { t } = useLanguage();
+  const { data: session } = useSession();
   const [reports, setReports] = useState<ReportItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -104,11 +106,11 @@ export default function ReportsPage() {
         </div>
 
         <Link
-          href="/reports/submit"
+          href={session?.user ? "/reports/submit" : "/auth/login?callbackUrl=/reports/submit"}
           className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs text-white bg-primary hover:bg-primary-hover shadow-soft transition-colors shrink-0 touch-target"
         >
           <PlusCircle className="w-4 h-4" />
-          <span>{t("reports.submitNew")}</span>
+          <span>{session?.user ? t("reports.submitNew") : "Sign in to report"}</span>
         </Link>
       </div>
 
@@ -217,7 +219,7 @@ export default function ReportsPage() {
               No matching community reports were found for this query. Be the first to report suspicious activity.
             </p>
             <Link
-              href="/reports/submit"
+              href={session?.user ? "/reports/submit" : "/auth/login?callbackUrl=/reports/submit"}
               className="inline-block mt-2 px-4 py-2 rounded-xl bg-trust text-white text-xs font-semibold shadow-soft"
             >
               Submit a Report

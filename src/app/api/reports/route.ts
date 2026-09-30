@@ -44,11 +44,18 @@ function isRateLimited(key: string, limit: number = 5, windowMs: number = 60000)
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
-    const userId = (session?.user as any)?.id || null;
+    const userId = (session?.user as any)?.id;
+
+    if (!userId) {
+      return NextResponse.json(
+        { error: "Sign in to submit a community report" },
+        { status: 401 }
+      );
+    }
 
     // Rate limiting key based on userId or IP
     const clientIp = req.headers.get("x-forwarded-for") || "client";
-    const rateKey = userId ? `user:${userId}` : `ip:${clientIp}`;
+    const rateKey = `user:${userId}`;
 
     if (isRateLimited(rateKey, 6, 60000)) {
       return NextResponse.json(
@@ -109,7 +116,7 @@ export async function POST(req: Request) {
       where: {
         identifierValueHash: identifierHash,
         category,
-        userId: userId || undefined,
+        userId,
         createdAt: {
           gte: new Date(Date.now() - 15 * 60 * 1000),
         },

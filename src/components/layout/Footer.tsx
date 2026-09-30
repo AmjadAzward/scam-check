@@ -4,9 +4,11 @@ import React from "react";
 import Link from "next/link";
 import { ShieldCheck, PhoneCall, Lock, HeartHandshake } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/context";
+import { useSession } from "next-auth/react";
 
 export default function Footer() {
   const { t } = useLanguage();
+  const { data: session } = useSession();
 
   return (
     <footer className="bg-surface border-t border-surface-border mt-16 pb-20 md:pb-10 pt-12 text-sm text-text-secondary">
@@ -53,9 +55,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/settings" className="hover:text-trust transition-colors">
-                  {t("settings.title")}
-                </Link>
+                {session?.user && (
+                  <Link href="/settings" className="hover:text-trust transition-colors">
+                    {t("settings.title")}
+                  </Link>
+                )}
               </li>
             </ul>
           </div>
@@ -81,11 +85,11 @@ export default function Footer() {
         <div className="border-t border-surface-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-text-tertiary">
           <p>© {new Date().getFullYear()} ScamCheck. Check before you click, pay or reply.</p>
           <div className="flex items-center gap-4">
-            <Link href="/settings" className="hover:text-text-secondary transition-colors">
-              Privacy & Data Rights
+            <Link href={session?.user ? "/settings" : "/auth/login?callbackUrl=/settings"} className="hover:text-text-secondary transition-colors">
+              {session?.user ? "Privacy & Data Rights" : "Sign in for privacy controls"}
             </Link>
             <span>•</span>
-            <Link href="/reports/submit" className="hover:text-text-secondary transition-colors">
+            <Link href={session?.user ? "/reports/submit" : "/auth/login?callbackUrl=/reports/submit"} className="hover:text-text-secondary transition-colors">
               Report Fraud
             </Link>
           </div>

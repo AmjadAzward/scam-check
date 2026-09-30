@@ -9,6 +9,8 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
+    const session = await getServerSession(authOptions);
+    const userId = (session?.user as any)?.id;
     const scan = await prisma.scan.findUnique({
       where: { id: params.id },
       include: {
@@ -19,6 +21,10 @@ export async function GET(
 
     if (!scan) {
       return NextResponse.json({ error: "Scan record not found" }, { status: 404 });
+    }
+
+    if (scan.userId && scan.userId !== userId) {
+      return NextResponse.json({ error: "Unauthorized access" }, { status: 403 });
     }
 
     // Defensive action recommendations based on riskLevel
@@ -64,6 +70,10 @@ export async function PATCH(
     const session = await getServerSession(authOptions);
     const userId = (session?.user as any)?.id;
 
+    if (!userId) {
+      return NextResponse.json({ error: "Sign in to save checks" }, { status: 401 });
+    }
+
     const body = await req.json();
     const { isSaved } = body;
 
@@ -76,7 +86,7 @@ export async function PATCH(
     }
 
     // Ownership check if scan is associated with a user
-    if (scan.userId && scan.userId !== userId) {
+    if (scan.userId !== userId) {
       return NextResponse.json({ error: "Unauthorized access" }, { status: 403 });
     }
 
@@ -102,6 +112,10 @@ export async function DELETE(
     const session = await getServerSession(authOptions);
     const userId = (session?.user as any)?.id;
 
+    if (!userId) {
+      return NextResponse.json({ error: "Sign in to delete checks" }, { status: 401 });
+    }
+
     const scan = await prisma.scan.findUnique({
       where: { id: params.id },
       include: { inputs: true },
@@ -114,7 +128,7 @@ export async function DELETE(
     // Strict ownership verification: if user is logged in and scan belongs to user, allow.
     // If user is not logged in or doesn't match owner, block unless admin.
     const userRole = (session?.user as any)?.role;
-    if (scan.userId && scan.userId !== userId && userRole !== "ADMIN") {
+    if (scan.userId !== userId && userRole !== "ADMIN") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 

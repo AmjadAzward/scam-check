@@ -21,17 +21,23 @@ export default function LoginPage() {
     setIsLoading(true);
     setError(null);
 
+    const requestedCallback = new URLSearchParams(window.location.search).get("callbackUrl");
+    const callbackUrl = requestedCallback?.startsWith("/") && !requestedCallback.startsWith("//")
+      ? requestedCallback
+      : "/";
+
     const res = await signIn("credentials", {
       email: email.trim(),
       password,
       redirect: false,
+      callbackUrl,
     });
 
     if (res?.error) {
       setError("Invalid email or password. Please try again.");
       setIsLoading(false);
     } else {
-      router.push("/");
+      router.push(callbackUrl);
       router.refresh();
     }
   };
