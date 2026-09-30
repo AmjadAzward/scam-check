@@ -12,17 +12,9 @@ import { lookupCommunityIntelligence } from "./community-intelligence";
 import { analyzeWithAI, AIAnalysisResponse } from "./ai-analyzer";
 import prisma from "@/lib/db";
 import crypto from "crypto";
+import { DEFAULT_WEIGHTS } from "./config";
 
-// Default backend configurable weights
-export const DEFAULT_WEIGHTS: RiskEngineWeights = {
-  aiMessageWeight: 0.20,
-  urlIntelWeight: 0.25,
-  threatIntelWeight: 0.30,
-  impersonationWeight: 0.20,
-  communityWeight: 0.15,
-  sensitiveInfoWeight: 0.20,
-  senderVerificationWeight: 0.15,
-};
+export { DEFAULT_WEIGHTS } from "./config";
 
 export interface RiskEngineInput {
   scanType: ScanType;

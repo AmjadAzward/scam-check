@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
-import { DEFAULT_WEIGHTS } from "@/lib/risk-engine/engine";
+import { DEFAULT_WEIGHTS } from "@/lib/risk-engine/config";
 import type { RiskEngineWeights } from "@/lib/risk-engine/types";
 
 // In-memory runtime weights holder (can be backed by DB settings)

@@ -2,13 +2,16 @@
 
 import React, { Suspense, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import dynamic from "next/dynamic";
 import { Image, MessageSquare, Link2, Phone, QrCode, ShieldCheck } from "lucide-react";
-import ScreenshotChecker from "@/components/check/ScreenshotChecker";
-import MessageChecker from "@/components/check/MessageChecker";
-import LinkChecker from "@/components/check/LinkChecker";
-import PhoneChecker from "@/components/check/PhoneChecker";
-import QrChecker from "@/components/check/QrChecker";
 import { useLanguage } from "@/lib/i18n/context";
+
+const checkerFallback = () => <div className="h-64 animate-pulse rounded-2xl bg-surface-muted" />;
+const MessageChecker = dynamic(() => import("@/components/check/MessageChecker"), { loading: checkerFallback });
+const ScreenshotChecker = dynamic(() => import("@/components/check/ScreenshotChecker"), { loading: checkerFallback });
+const LinkChecker = dynamic(() => import("@/components/check/LinkChecker"), { loading: checkerFallback });
+const PhoneChecker = dynamic(() => import("@/components/check/PhoneChecker"), { loading: checkerFallback });
+const QrChecker = dynamic(() => import("@/components/check/QrChecker"), { loading: checkerFallback, ssr: false });
 
 type TabType = "screenshot" | "message" | "link" | "phone" | "qr";
 
