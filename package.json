@@ -9,7 +9,7 @@
     "lint": "next lint",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
-    "prisma:seed": "node --loader ts-node/esm prisma/seed.ts",
+    "prisma:seed": "tsx prisma/seed.ts",
     "test": "npx tsx tests/scamcheck.test.ts"
   },
   "dependencies": {
