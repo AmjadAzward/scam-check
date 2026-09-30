@@ -51,7 +51,8 @@ body {
   opacity: 0.65;
 }
 
-.glass-surface > * { position: relative; z-index: 1; }
+.glass-surface > :not(.absolute) { position: relative; z-index: 1; }
+.glass-surface > .absolute { z-index: 0; }
 
 .glass-nav {
   background: rgba(255, 255, 255, 0.78);
