@@ -65,6 +65,33 @@ export async function GET(req: Request) {
             : "This number has received 0 community reports on ScamCheck.",
         verificationNote:
           "ScamCheck does not identify the number owner or verify the caller's identity. No reports does not guarantee that a number is safe.",
+        assessmentConfidence: threatMatch
+          ? "High - authoritative threat match found"
+          : commIntel.confirmedReports > 0
+          ? "High - moderator-confirmed reports found"
+          : commIntel.totalReports > 0
+          ? "Moderate - based on community reports"
+          : "Limited - no negative records found",
+        intelligenceSources: [
+          { name: "ScamCheck community reports", checked: true, matches: commIntel.totalReports },
+          { name: "ScamCheck threat indicators", checked: true, matches: threatMatch ? 1 : 0 },
+          { name: "Phone format validation", checked: true, matches: normalized.isValid ? 1 : 0 },
+          { name: "Sri Lankan prefix directory", checked: normalized.countryCode === "94", matches: normalized.networkOperator ? 1 : 0 },
+        ],
+        recommendedActions:
+          threatMatch || commIntel.riskScore >= 40
+            ? [
+                "Do not share OTPs, PINs, passwords or card details.",
+                "Do not use links or payment instructions sent by this caller.",
+                "Verify the request using the organization's official published number.",
+                "Block the number and submit a report if the contact was fraudulent.",
+              ]
+            : [
+                "Verify unexpected requests using an official published number.",
+                "Never share OTPs, PINs, passwords or card details.",
+                "Do not install apps or open payment links at a caller's request.",
+                "Report suspicious contact so future checks can warn others.",
+              ],
         threatIntelRecord: threatMatch
           ? {
               source: threatMatch.source,

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Phone, ShieldCheck, AlertCircle, Globe2, Smartphone, Radio, BadgeCheck, Info } from "lucide-react";
+import { Phone, ShieldCheck, AlertCircle, Globe2, Smartphone, Radio, BadgeCheck, Info, Database, ListChecks } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/context";
 import ProcessingScreen from "@/components/common/ProcessingScreen";
 import RiskBadge from "@/components/risk/RiskBadge";
@@ -184,6 +184,40 @@ export default function PhoneChecker() {
             </div>
           )}
 
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <div className="rounded-xl border border-surface-border bg-surface-muted/50 p-3">
+              <div className="text-[10px] font-semibold uppercase tracking-wide text-text-tertiary">Community reports</div>
+              <div className="mt-1 text-xl font-bold text-text-primary">{quickResult.totalCommunityReports}</div>
+            </div>
+            <div className="rounded-xl border border-surface-border bg-surface-muted/50 p-3">
+              <div className="text-[10px] font-semibold uppercase tracking-wide text-text-tertiary">Moderator confirmed</div>
+              <div className="mt-1 text-xl font-bold text-text-primary">{quickResult.confirmedReports}</div>
+            </div>
+            <div className="rounded-xl border border-surface-border bg-surface-muted/50 p-3">
+              <div className="text-[10px] font-semibold uppercase tracking-wide text-text-tertiary">Threat-list match</div>
+              <div className={`mt-1 text-sm font-bold ${quickResult.threatIntelRecord ? "text-risk-high" : "text-trust"}`}>
+                {quickResult.threatIntelRecord ? "Match found" : "No match"}
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-surface-border bg-surface p-3">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase text-text-secondary">
+              <Database className="h-4 w-4 text-trust" /> Intelligence coverage
+            </div>
+            <div className="mt-2 text-sm font-semibold text-text-primary">{quickResult.assessmentConfidence}</div>
+            <div className="mt-3 grid gap-1.5 sm:grid-cols-2">
+              {quickResult.intelligenceSources?.map((source: any) => (
+                <div key={source.name} className="flex items-center justify-between gap-2 text-xs text-text-secondary">
+                  <span>{source.name}</span>
+                  <span className={source.checked ? "font-semibold text-trust" : "text-text-tertiary"}>
+                    {source.checked ? `${source.matches} match${source.matches === 1 ? "" : "es"}` : "Not applicable"}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Categories Breakdown */}
           {quickResult.categories && quickResult.categories.length > 0 ? (
             <div className="space-y-2">
@@ -208,6 +242,19 @@ export default function PhoneChecker() {
             </p>
           )}
 
+          {quickResult.platforms?.length > 0 && (
+            <div className="space-y-2">
+              <div className="text-xs font-semibold text-text-secondary uppercase">Reported contact channels</div>
+              <div className="flex flex-wrap gap-2">
+                {quickResult.platforms.map((item: any) => (
+                  <span key={item.platform} className="rounded-full border border-surface-border bg-surface-muted px-3 py-1 text-xs font-medium text-text-primary">
+                    {item.platform}: {item.count}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Timestamps */}
           {(quickResult.firstReported || quickResult.mostRecentlyReported) && (
             <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-text-tertiary pt-2 border-t border-surface-border">
@@ -223,6 +270,20 @@ export default function PhoneChecker() {
           <div className="flex items-start gap-2 rounded-xl bg-risk-medium-bg/60 p-3 text-xs text-text-secondary">
             <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-risk-medium" />
             <span>{quickResult.verificationNote}</span>
+          </div>
+
+          <div className="rounded-xl border border-surface-border bg-surface p-3">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase text-text-secondary">
+              <ListChecks className="h-4 w-4 text-trust" /> Recommended next steps
+            </div>
+            <ul className="mt-2 space-y-1.5 text-xs text-text-secondary">
+              {quickResult.recommendedActions?.map((action: string) => (
+                <li key={action} className="flex gap-2">
+                  <span className="font-bold text-trust">✓</span>
+                  <span>{action}</span>
+                </li>
+              ))}
+            </ul>
           </div>
 
           {/* Full Assessment button */}
