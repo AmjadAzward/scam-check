@@ -5,11 +5,9 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ShieldCheck, Lock, Mail, AlertCircle, ArrowRight } from "lucide-react";
-import { useLanguage } from "@/lib/i18n/context";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { t } = useLanguage();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

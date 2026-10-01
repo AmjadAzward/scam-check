@@ -3,7 +3,7 @@ import prisma from "@/lib/db";
 import { generateSignedFileUrl } from "@/lib/storage";
 
 export async function GET(
-  req: Request,
+  _req: Request,
   { params }: { params: { id: string } }
 ) {
   try {

@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/db";
 import { normalizePhoneNumber } from "@/lib/risk-engine/phone-normalizer";
-import { maskPhoneNumber, maskUrl, sanitizeSensitiveText } from "@/lib/privacy/masking";
+import { maskUrl, sanitizeSensitiveText } from "@/lib/privacy/masking";
 import crypto from "crypto";
 import { z } from "zod";
 
@@ -54,7 +54,6 @@ export async function POST(req: Request) {
     }
 
     // Rate limiting key based on userId or IP
-    const clientIp = req.headers.get("x-forwarded-for") || "client";
     const rateKey = `user:${userId}`;
 
     if (isRateLimited(rateKey, 6, 60000)) {

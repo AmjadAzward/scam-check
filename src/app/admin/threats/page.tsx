@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, ShieldAlert, Plus, CheckCircle, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Plus } from "lucide-react";
 import RiskBadge from "@/components/risk/RiskBadge";
 
 interface ThreatItem {
@@ -24,7 +24,7 @@ export default function ThreatIndicatorsAdminPage() {
   const [type, setType] = useState<"URL" | "DOMAIN" | "PHONE" | "EMAIL" | "KEYWORD">("DOMAIN");
   const [value, setValue] = useState("");
   const [source, setSource] = useState("CERT_LK");
-  const [riskLevel, setRiskLevel] = useState("KNOWN_MALICIOUS");
+  const [riskLevel] = useState("KNOWN_MALICIOUS");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const loadThreats = async () => {

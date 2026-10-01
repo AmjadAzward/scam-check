@@ -8,10 +8,8 @@ import {
   Globe,
   Download,
   Trash2,
-  Bell,
   AlertTriangle,
   CheckCircle2,
-  FileText,
 } from "lucide-react";
 import { useLanguage, Language } from "@/lib/i18n/context";
 
@@ -20,8 +18,6 @@ export default function SettingsPage() {
   const { language, setLanguage, t } = useLanguage();
 
   const [deleteScreenshots, setDeleteScreenshots] = useState(true);
-  const [notifications, setNotifications] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
 
@@ -32,7 +28,6 @@ export default function SettingsPage() {
         const data = await res.json();
         if (data.preferences) {
           setDeleteScreenshots(data.preferences.deleteScreenshotsAfterScan ?? true);
-          setNotifications(data.preferences.notificationsEnabled ?? true);
         }
       } catch (err) {
         console.error("Failed to load user preferences:", err);
@@ -43,7 +38,6 @@ export default function SettingsPage() {
 
   const handleSaveToggle = async (newDeleteVal: boolean) => {
     setDeleteScreenshots(newDeleteVal);
-    setIsSaving(true);
     try {
       await fetch("/api/user/preferences", {
         method: "PATCH",
@@ -56,8 +50,6 @@ export default function SettingsPage() {
       setTimeout(() => setSavedSuccess(false), 2500);
     } catch (err) {
       console.error("Failed to save preference:", err);
-    } finally {
-      setIsSaving(false);
     }
   };
 

@@ -6,13 +6,9 @@ import {
   Clock,
   Bookmark,
   Trash2,
-  ShieldCheck,
   AlertCircle,
-  ArrowRight,
-  ExternalLink,
 } from "lucide-react";
 import RiskBadge from "@/components/risk/RiskBadge";
-import { useLanguage } from "@/lib/i18n/context";
 
 interface ScanRecord {
   id: string;
@@ -25,7 +21,6 @@ interface ScanRecord {
 }
 
 export default function HistoryPage() {
-  const { t } = useLanguage();
   const [tab, setTab] = useState<"all" | "saved">("all");
   const [scans, setScans] = useState<ScanRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);

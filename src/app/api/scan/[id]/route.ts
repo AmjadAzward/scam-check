@@ -5,7 +5,7 @@ import prisma from "@/lib/db";
 import { deletePrivateFile } from "@/lib/storage";
 
 export async function GET(
-  req: Request,
+  _req: Request,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -63,7 +63,7 @@ export async function GET(
 }
 
 export async function PATCH(
-  req: Request,
+  _req: Request,
   { params }: { params: { id: string } }
 ) {
   try {

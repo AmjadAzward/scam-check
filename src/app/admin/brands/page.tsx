@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Building2, Plus, Globe, CheckCircle2, Search } from "lucide-react";
+import { ArrowLeft, Building2, Plus, CheckCircle2, Search } from "lucide-react";
 
 interface BrandItem {
   id: string;
@@ -22,7 +22,7 @@ export default function BrandsAdminPage() {
   // New brand state
   const [newName, setNewName] = useState("");
   const [newAliases, setNewAliases] = useState("");
-  const [newCountry, setNewCountry] = useState("LK");
+  const [newCountry] = useState("LK");
   const [newDomains, setNewDomains] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 

@@ -7,7 +7,7 @@ import type { RiskEngineWeights } from "@/lib/risk-engine/types";
 // In-memory runtime weights holder (can be backed by DB settings)
 let currentWeights: RiskEngineWeights = { ...DEFAULT_WEIGHTS };
 
-export async function GET(req: Request) {
+export async function GET(_req: Request) {
   try {
     const session = await getServerSession(authOptions);
     const userRole = (session?.user as any)?.role;

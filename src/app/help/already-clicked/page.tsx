@@ -9,7 +9,6 @@ import {
   CreditCard,
   KeyRound,
   Download,
-  PhoneCall,
   CheckCircle2,
   ArrowRight,
   ArrowLeft,

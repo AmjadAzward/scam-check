@@ -5,7 +5,7 @@ import prisma from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: Request) {
+export async function GET(_req: Request) {
   try {
     const session = await getServerSession(authOptions);
     const userRole = (session?.user as any)?.role;

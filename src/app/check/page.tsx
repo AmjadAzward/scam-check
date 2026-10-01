@@ -3,7 +3,7 @@
 import React, { Suspense, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
-import { Image, MessageSquare, Link2, Phone, QrCode, ShieldCheck } from "lucide-react";
+import { Image, MessageSquare, Link2, Phone, QrCode } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/context";
 
 const checkerFallback = () => <div className="h-64 animate-pulse rounded-2xl bg-surface-muted" />;

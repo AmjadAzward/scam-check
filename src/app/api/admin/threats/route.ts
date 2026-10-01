@@ -12,7 +12,7 @@ const ThreatCreateSchema = z.object({
   riskLevel: z.enum(["HIGH_RISK", "KNOWN_MALICIOUS"]).default("KNOWN_MALICIOUS"),
 });
 
-export async function GET(req: Request) {
+export async function GET(_req: Request) {
   try {
     const session = await getServerSession(authOptions);
     const userRole = (session?.user as any)?.role;

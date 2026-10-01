@@ -2,24 +2,16 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import {
   ShieldCheck,
-  AlertTriangle,
   FileCheck,
   Building2,
   Sliders,
-  CheckCircle2,
-  Clock,
-  Activity,
-  Layers,
-  Users,
   ShieldAlert,
   ArrowRight,
 } from "lucide-react";
 
 export default function AdminOverviewPage() {
-  const { data: session } = useSession();
   const [stats, setStats] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 

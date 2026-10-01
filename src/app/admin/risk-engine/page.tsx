@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Sliders, CheckCircle2, RotateCcw } from "lucide-react";
+import { ArrowLeft, CheckCircle2, RotateCcw } from "lucide-react";
 import { DEFAULT_WEIGHTS } from "@/lib/risk-engine/config";
 import type { RiskEngineWeights } from "@/lib/risk-engine/types";
 
 export default function RiskEngineSettingsPage() {
   const [weights, setWeights] = useState<RiskEngineWeights>(DEFAULT_WEIGHTS);
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 

@@ -12,7 +12,6 @@ import {
   AlertTriangle,
   Flag,
   ArrowLeft,
-  CheckCircle,
 } from "lucide-react";
 import RiskBadge from "@/components/risk/RiskBadge";
 import RiskMeter from "@/components/risk/RiskMeter";

@@ -11,12 +11,10 @@ import {
   AlertCircle,
   Lock,
 } from "lucide-react";
-import { useLanguage } from "@/lib/i18n/context";
 
 function SubmitReportContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { t } = useLanguage();
 
   const [identifierType, setIdentifierType] = useState<string>("PHONE");
   const [rawIdentifier, setRawIdentifier] = useState<string>("");

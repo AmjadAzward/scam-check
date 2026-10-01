@@ -7,9 +7,6 @@ import {
   CheckCircle,
   XCircle,
   ShieldAlert,
-  AlertTriangle,
-  Lock,
-  ExternalLink,
   Filter,
 } from "lucide-react";
 

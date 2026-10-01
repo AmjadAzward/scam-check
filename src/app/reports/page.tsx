@@ -3,16 +3,12 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
-  FileText,
   Search,
-  Filter,
   PlusCircle,
   ShieldCheck,
   Lock,
   Calendar,
   AlertCircle,
-  Tag,
-  ArrowRight,
 } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/context";
 import { useSession } from "next-auth/react";
