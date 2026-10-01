@@ -10,6 +10,11 @@ export interface NormalizedPhone {
   masked: string; // e.g. +94 77 •••• 567
   hash: string; // SHA256 of normalized string for indexing/matching
   networkOperator?: string; // Sri Lanka carrier identification (Dialog, Mobitel, etc.)
+  countryName: string;
+  numberType: "Mobile" | "Fixed line" | "Unknown";
+  localFormat?: string;
+  dialingPrefix?: string;
+  carrierLookupMethod?: string;
 }
 
 export function normalizePhoneNumber(input: string): NormalizedPhone {
@@ -124,6 +129,14 @@ export function normalizePhoneNumber(input: string): NormalizedPhone {
 
   const hash = crypto.createHash("sha256").update(normalized.toLowerCase()).digest("hex");
 
+  const isSriLankan = countryCode === "94" && nationalNumber.length === 9;
+  const numberType = isSriLankan
+    ? nationalNumber.startsWith("7")
+      ? "Mobile"
+      : "Fixed line"
+    : "Unknown";
+  const dialingPrefix = isSriLankan ? nationalNumber.slice(0, 2) : undefined;
+
   return {
     raw,
     normalized,
@@ -134,5 +147,12 @@ export function normalizePhoneNumber(input: string): NormalizedPhone {
     masked,
     hash,
     networkOperator,
+    countryName: isSriLankan ? "Sri Lanka" : "International or undetermined",
+    numberType,
+    localFormat: isSriLankan
+      ? `0${nationalNumber.slice(0, 2)} ${nationalNumber.slice(2, 5)} ${nationalNumber.slice(5)}`
+      : undefined,
+    dialingPrefix,
+    carrierLookupMethod: networkOperator ? "Number-prefix match" : undefined,
   };
 }

@@ -35,7 +35,16 @@ export async function GET(req: Request) {
         displayFormatted: normalized.displayFormatted,
         masked: normalized.masked,
         isValid: normalized.isValid,
+        countryName: normalized.countryName,
+        countryCallingCode: normalized.countryCode === "unknown" ? null : `+${normalized.countryCode}`,
+        numberType: normalized.numberType,
+        localFormat: normalized.localFormat || null,
+        dialingPrefix: normalized.dialingPrefix || null,
         networkOperator: normalized.networkOperator || null,
+        carrierLookupMethod: normalized.carrierLookupMethod || null,
+        carrierDisclaimer: normalized.networkOperator
+          ? "Carrier is inferred from the original number prefix and may differ if the number was ported."
+          : null,
         totalCommunityReports: commIntel.totalReports,
         confirmedReports: commIntel.confirmedReports,
         firstReported: commIntel.firstReportedAt,
@@ -54,6 +63,8 @@ export async function GET(req: Request) {
           commIntel.totalReports > 0
             ? `This number has received ${commIntel.totalReports} community reports.`
             : "This number has received 0 community reports on ScamCheck.",
+        verificationNote:
+          "ScamCheck does not identify the number owner or verify the caller's identity. No reports does not guarantee that a number is safe.",
         threatIntelRecord: threatMatch
           ? {
               source: threatMatch.source,

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Phone, ShieldCheck, AlertCircle } from "lucide-react";
+import { Phone, ShieldCheck, AlertCircle, Globe2, Smartphone, Radio, BadgeCheck, Info } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/context";
 import ProcessingScreen from "@/components/common/ProcessingScreen";
 import RiskBadge from "@/components/risk/RiskBadge";
@@ -92,6 +92,7 @@ export default function PhoneChecker() {
               value={phone}
               onChange={(e) => {
                 setPhone(e.target.value);
+                setQuickResult(null);
                 if (error) setError(null);
               }}
               placeholder="e.g. 077 123 4567 or +94 77 123 4567"
@@ -135,6 +136,54 @@ export default function PhoneChecker() {
             {quickResult.statement}
           </div>
 
+          <div className="space-y-2">
+            <div className="text-xs font-semibold text-text-secondary uppercase">
+              Number intelligence
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {[
+                { icon: Globe2, label: "Country", value: quickResult.countryName },
+                { icon: Smartphone, label: "Number type", value: quickResult.numberType },
+                { icon: Radio, label: "Original carrier", value: quickResult.networkOperator || "Not identified" },
+                { icon: BadgeCheck, label: "Format check", value: quickResult.isValid ? "Valid number structure" : "Unrecognized structure" },
+              ].map(({ icon: Icon, label, value }) => (
+                <div key={label} className="flex items-center gap-3 rounded-xl border border-surface-border bg-surface-muted/50 p-3">
+                  <Icon className="h-4 w-4 shrink-0 text-trust" />
+                  <div className="min-w-0">
+                    <div className="text-[10px] font-semibold uppercase tracking-wide text-text-tertiary">{label}</div>
+                    <div className="truncate text-sm font-semibold text-text-primary">{value}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-surface-border bg-surface p-3 text-xs text-text-secondary space-y-1.5">
+            <div className="flex justify-between gap-4">
+              <span>International format</span>
+              <span className="font-mono font-semibold text-text-primary">{quickResult.displayFormatted}</span>
+            </div>
+            {quickResult.localFormat && (
+              <div className="flex justify-between gap-4">
+                <span>Local format</span>
+                <span className="font-mono font-semibold text-text-primary">{quickResult.localFormat}</span>
+              </div>
+            )}
+            {quickResult.dialingPrefix && (
+              <div className="flex justify-between gap-4">
+                <span>Number prefix</span>
+                <span className="font-mono font-semibold text-text-primary">0{quickResult.dialingPrefix}</span>
+              </div>
+            )}
+          </div>
+
+          {quickResult.carrierDisclaimer && (
+            <div className="flex items-start gap-2 text-xs text-text-tertiary">
+              <Info className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>{quickResult.carrierDisclaimer}</span>
+            </div>
+          )}
+
           {/* Categories Breakdown */}
           {quickResult.categories && quickResult.categories.length > 0 ? (
             <div className="space-y-2">
@@ -170,6 +219,11 @@ export default function PhoneChecker() {
               )}
             </div>
           )}
+
+          <div className="flex items-start gap-2 rounded-xl bg-risk-medium-bg/60 p-3 text-xs text-text-secondary">
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-risk-medium" />
+            <span>{quickResult.verificationNote}</span>
+          </div>
 
           {/* Full Assessment button */}
           <button

@@ -1,8 +1,9 @@
 import React from "react";
-import { AlertCircle, AlertTriangle, ShieldX, Link2, Users, CreditCard } from "lucide-react";
+import { AlertCircle, ShieldCheck } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/context";
 
 interface Reason {
+  score?: number;
   title: string;
   description: string;
   evidence?: string | null;
@@ -25,13 +26,15 @@ export default function RiskReasonsList({ reasons }: RiskReasonsListProps) {
       </h3>
 
       <div className="space-y-2.5">
-        {reasons.map((r, idx) => (
+        {reasons.map((r, idx) => {
+          const isWarning = (r.score ?? 50) >= 40;
+          return (
           <div
             key={idx}
             className="p-4 rounded-card bg-surface border border-surface-border shadow-soft flex items-start gap-3.5 transition-all hover:border-surface-border/80"
           >
-            <div className="w-8 h-8 rounded-lg bg-risk-high-bg text-risk-high flex items-center justify-center shrink-0 mt-0.5">
-              <AlertCircle className="w-4 h-4" />
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${isWarning ? "bg-risk-high-bg text-risk-high" : "bg-trust-subtle text-trust"}`}>
+              {isWarning ? <AlertCircle className="w-4 h-4" /> : <ShieldCheck className="w-4 h-4" />}
             </div>
 
             <div className="flex-1 space-y-1">
@@ -52,7 +55,8 @@ export default function RiskReasonsList({ reasons }: RiskReasonsListProps) {
               )}
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

@@ -35,7 +35,7 @@
     "highRisk": "HIGH RISK",
     "knownMalicious": "KNOWN MALICIOUS",
     "scoreLabel": "Risk Score",
-    "whySuspicious": "WHY THIS LOOKS SUSPICIOUS",
+    "whySuspicious": "WHAT WE FOUND",
     "whatToDo": "WHAT YOU SHOULD DO",
     "technicalDetails": "Technical Details",
     "noThreatsDetected": "We did not detect strong risk indicators, but independent verification is still recommended.",

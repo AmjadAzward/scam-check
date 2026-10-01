@@ -105,12 +105,24 @@ export async function runRiskEngine(input: RiskEngineInput): Promise<RiskEngineR
         type: "sender_verification",
         score: 15,
         confidence: 90,
-        title: `Operator: ${norm.networkOperator}`,
-        description: `Recognized Sri Lankan network operator (${norm.networkOperator}).`,
-        evidence: norm.displayFormatted,
-        source: "Carrier Prefix Verification",
+        title: `${norm.numberType} number - ${norm.networkOperator}`,
+        description: `${norm.countryName} ${norm.numberType.toLowerCase()} number. The original carrier is inferred from the 0${norm.dialingPrefix} prefix and may differ if the number was ported.`,
+        evidence: `${norm.displayFormatted} | Local: ${norm.localFormat}`,
+        source: "Number Format and Prefix Analysis",
       });
     }
+
+    signals.push({
+      type: "sender_verification",
+      score: norm.isValid ? 5 : 55,
+      confidence: 95,
+      title: norm.isValid ? "Number structure recognized" : "Unrecognized number structure",
+      description: norm.isValid
+        ? `The number can be normalized to international format. This validates its structure, not its owner or the caller's identity.`
+        : "The number does not match a recognized phone-number structure.",
+      evidence: norm.displayFormatted,
+      source: "Format Validation",
+    });
 
     summary = commIntel.totalReports > 0
       ? `Phone number ${norm.masked} has received ${commIntel.totalReports} community reports.`
