@@ -13,6 +13,7 @@ import { analyzeWithAI, AIAnalysisResponse } from "./ai-analyzer";
 import prisma from "@/lib/db";
 import crypto from "crypto";
 import { DEFAULT_WEIGHTS } from "./config";
+import { calculateIpqsPhoneRisk, lookupIpqsPhone } from "@/lib/ipqs-phone";
 
 export { DEFAULT_WEIGHTS } from "./config";
 
@@ -77,6 +78,31 @@ export async function runRiskEngine(input: RiskEngineInput): Promise<RiskEngineR
     // Community Reports Intelligence
     const commIntel = await lookupCommunityIntelligence(norm.normalized, norm.masked);
     communityRisk = commIntel.riskScore;
+
+    const ipqs = await lookupIpqsPhone(norm.normalized);
+    const ipqsRisk = calculateIpqsPhoneRisk(ipqs);
+    if (ipqs.available) {
+      threatIntelRisk = Math.max(threatIntelRisk, ipqsRisk);
+      const externalFlags = [
+        ipqs.recentAbuse ? "recent abuse" : null,
+        ipqs.spammer ? "spam reports" : null,
+        ipqs.risky ? "risky reputation" : null,
+        ipqs.voip ? "VoIP" : null,
+        ipqs.prepaid ? "prepaid" : null,
+      ].filter(Boolean);
+
+      signals.push({
+        type: "threat_intel",
+        score: ipqsRisk,
+        confidence: 90,
+        title: externalFlags.length > 0 ? "External reputation signals found" : "External reputation check completed",
+        description: externalFlags.length > 0
+          ? `IPQS identified: ${externalFlags.join(", ")}.`
+          : "IPQS did not return active spam or recent-abuse indicators for this number.",
+        evidence: `IPQS fraud score: ${ipqs.fraudScore ?? "not provided"}/100`,
+        source: "IPQualityScore Phone Reputation",
+      });
+    }
 
     if (commIntel.totalReports > 0) {
       signals.push({

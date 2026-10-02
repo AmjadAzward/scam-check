@@ -218,6 +218,47 @@ export default function PhoneChecker() {
             </div>
           </div>
 
+          {quickResult.externalIntelligence?.available ? (
+            <div className="rounded-xl border border-surface-border bg-surface p-3 space-y-3">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2 text-xs font-semibold uppercase text-text-secondary">
+                  <ShieldCheck className="h-4 w-4 text-trust" /> External phone reputation
+                </div>
+                <span className={`text-sm font-bold ${quickResult.externalIntelligence.fraudScore >= 70 ? "text-risk-high" : quickResult.externalIntelligence.fraudScore >= 40 ? "text-risk-medium" : "text-trust"}`}>
+                  {quickResult.externalIntelligence.fraudScore ?? "-"}/100
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+                {[
+                  ["Active line", quickResult.externalIntelligence.active],
+                  ["Risky reputation", quickResult.externalIntelligence.risky],
+                  ["Recent abuse", quickResult.externalIntelligence.recentAbuse],
+                  ["Known spammer", quickResult.externalIntelligence.spammer],
+                  ["VoIP number", quickResult.externalIntelligence.voip],
+                  ["Prepaid number", quickResult.externalIntelligence.prepaid],
+                ].map(([label, value]) => (
+                  <div key={String(label)} className="flex items-center justify-between gap-2 border-b border-surface-border/60 pb-1.5">
+                    <span className="text-text-secondary">{String(label)}</span>
+                    <span className={`font-semibold ${value === true && label !== "Active line" ? "text-risk-high" : "text-text-primary"}`}>
+                      {value === null ? "Unknown" : value ? "Yes" : "No"}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              {(quickResult.externalIntelligence.carrier || quickResult.externalIntelligence.lineType) && (
+                <p className="text-xs text-text-tertiary">
+                  Live metadata: {[quickResult.externalIntelligence.carrier, quickResult.externalIntelligence.lineType, quickResult.externalIntelligence.region].filter(Boolean).join(" - ")}
+                </p>
+              )}
+              <p className="text-[11px] text-text-tertiary">Source: IPQualityScore Phone Reputation</p>
+            </div>
+          ) : (
+            <div className="flex items-start gap-2 rounded-xl border border-surface-border bg-surface-muted/50 p-3 text-xs text-text-tertiary">
+              <Info className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>{quickResult.externalIntelligence?.message || "External phone reputation was unavailable. ScamCheck used its local intelligence sources."}</span>
+            </div>
+          )}
+
           {/* Categories Breakdown */}
           {quickResult.categories && quickResult.categories.length > 0 ? (
             <div className="space-y-2">

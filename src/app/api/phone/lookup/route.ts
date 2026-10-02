@@ -3,6 +3,7 @@ import { normalizePhoneNumber } from "@/lib/risk-engine/phone-normalizer";
 import { lookupCommunityIntelligence } from "@/lib/risk-engine/community-intelligence";
 import prisma from "@/lib/db";
 import crypto from "crypto";
+import { calculateIpqsPhoneRisk, lookupIpqsPhone } from "@/lib/ipqs-phone";
 
 export const dynamic = "force-dynamic";
 
@@ -16,16 +17,19 @@ export async function GET(req: Request) {
     }
 
     const normalized = normalizePhoneNumber(rawNumber);
-    const commIntel = await lookupCommunityIntelligence(
-      normalized.normalized,
-      normalized.masked
-    );
+    const [commIntel, ipqs] = await Promise.all([
+      lookupCommunityIntelligence(normalized.normalized, normalized.masked),
+      lookupIpqsPhone(normalized.normalized),
+    ]);
 
     // Check Threat Indicators DB
     const phoneHash = crypto.createHash("sha256").update(normalized.normalized.toLowerCase()).digest("hex");
     const threatMatch = await prisma.threatIndicator.findFirst({
       where: { indicatorValueHash: phoneHash, active: true },
     });
+
+    const externalRisk = calculateIpqsPhoneRisk(ipqs);
+    const combinedRiskScore = threatMatch ? 95 : Math.max(commIntel.riskScore, externalRisk);
 
     return NextResponse.json({
       success: true,
@@ -51,12 +55,12 @@ export async function GET(req: Request) {
         mostRecentlyReported: commIntel.lastReportedAt,
         categories: commIntel.categoryBreakdown,
         platforms: commIntel.platformBreakdown,
-        riskScore: threatMatch ? 95 : commIntel.riskScore,
+        riskScore: combinedRiskScore,
         riskLevel: threatMatch
           ? threatMatch.riskLevel
-          : commIntel.riskScore >= 70
+          : combinedRiskScore >= 70
           ? "HIGH_RISK"
-          : commIntel.riskScore >= 40
+          : combinedRiskScore >= 40
           ? "MEDIUM_RISK"
           : "LOW_RISK",
         statement:
@@ -65,6 +69,7 @@ export async function GET(req: Request) {
             : "This number has received 0 community reports on ScamCheck.",
         verificationNote:
           "ScamCheck does not identify the number owner or verify the caller's identity. No reports does not guarantee that a number is safe.",
+        externalIntelligence: ipqs,
         assessmentConfidence: threatMatch
           ? "High - authoritative threat match found"
           : commIntel.confirmedReports > 0
@@ -77,6 +82,7 @@ export async function GET(req: Request) {
           { name: "ScamCheck threat indicators", checked: true, matches: threatMatch ? 1 : 0 },
           { name: "Phone format validation", checked: true, matches: normalized.isValid ? 1 : 0 },
           { name: "Sri Lankan prefix directory", checked: normalized.countryCode === "94", matches: normalized.networkOperator ? 1 : 0 },
+          { name: "IPQS phone reputation", checked: ipqs.available, matches: ipqs.risky || ipqs.recentAbuse || ipqs.spammer ? 1 : 0 },
         ],
         recommendedActions:
           threatMatch || commIntel.riskScore >= 40
