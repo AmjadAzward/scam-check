@@ -12,12 +12,19 @@ async function main() {
   console.log("🌱 Starting ScamCheck database seed...");
 
   // 1. Create Default Users (Admin, Moderator, Consumer)
-  const passwordHash = await bcrypt.hash("Admin123!Secure", 10);
-  const userPasswordHash = await bcrypt.hash("User123!Safe", 10);
+  const adminSeedPassword = process.env.SEED_ADMIN_PASSWORD;
+  const moderatorSeedPassword = process.env.SEED_MODERATOR_PASSWORD;
+  const userSeedPassword = process.env.SEED_USER_PASSWORD;
+  if (!adminSeedPassword || !moderatorSeedPassword || !userSeedPassword) {
+    throw new Error("Set SEED_ADMIN_PASSWORD, SEED_MODERATOR_PASSWORD, and SEED_USER_PASSWORD before running the seed.");
+  }
+  const passwordHash = await bcrypt.hash(adminSeedPassword, 12);
+  const moderatorPasswordHash = await bcrypt.hash(moderatorSeedPassword, 12);
+  const userPasswordHash = await bcrypt.hash(userSeedPassword, 12);
 
   const admin = await prisma.user.upsert({
     where: { email: "admin@scamcheck.lk" },
-    update: {},
+    update: { passwordHash },
     create: {
       email: "admin@scamcheck.lk",
       name: "ScamCheck Admin",
@@ -37,11 +44,11 @@ async function main() {
 
   const moderator = await prisma.user.upsert({
     where: { email: "moderator@scamcheck.lk" },
-    update: {},
+    update: { passwordHash: moderatorPasswordHash },
     create: {
       email: "moderator@scamcheck.lk",
       name: "Community Safety Lead",
-      passwordHash,
+      passwordHash: moderatorPasswordHash,
       role: "MODERATOR",
       country: "LK",
       language: "en",
@@ -57,7 +64,7 @@ async function main() {
 
   const demoUser = await prisma.user.upsert({
     where: { email: "user@scamcheck.lk" },
-    update: {},
+    update: { passwordHash: userPasswordHash },
     create: {
       email: "user@scamcheck.lk",
       name: "Kasun Perera",

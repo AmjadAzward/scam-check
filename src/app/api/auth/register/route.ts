@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/db";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
+import { checkRateLimit, rateLimitResponse, requestFingerprint } from "@/lib/security/rate-limit";
 
 const RegisterSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").max(50),
@@ -13,6 +14,9 @@ const RegisterSchema = z.object({
 
 export async function POST(req: Request) {
   try {
+    const limit = checkRateLimit("register", requestFingerprint(req), 5, 60 * 60 * 1000);
+    if (!limit.allowed) return rateLimitResponse(limit, "Too many registration attempts. Please try again later.");
+
     const body = await req.json();
     const result = RegisterSchema.safeParse(body);
 

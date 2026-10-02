@@ -6,6 +6,7 @@ import { runRiskEngine } from "@/lib/risk-engine/engine";
 import { deletePrivateFile } from "@/lib/storage";
 import { sanitizeSensitiveText } from "@/lib/privacy/masking";
 import { z } from "zod";
+import { checkRateLimit, rateLimitResponse, requestFingerprint } from "@/lib/security/rate-limit";
 
 const ScanRequestSchema = z.object({
   scanType: z.enum(["SCREENSHOT", "MESSAGE", "URL", "PHONE", "QR"]),
@@ -21,6 +22,8 @@ export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
     const userId = (session?.user as any)?.id || null;
+    const limit = checkRateLimit("scan", userId || requestFingerprint(req), userId ? 60 : 20, 60 * 60 * 1000);
+    if (!limit.allowed) return rateLimitResponse(limit, "Scan limit reached. Please wait before trying again.");
 
     const body = await req.json();
     const parsed = ScanRequestSchema.safeParse(body);

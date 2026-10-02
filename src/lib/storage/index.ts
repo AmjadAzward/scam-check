@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
+import { requireServerSecret } from "@/lib/security/secrets";
 
 const UPLOAD_DIR = path.join(process.cwd(), "private_uploads");
 
@@ -35,8 +36,19 @@ export async function savePrivateFile(
     throw new Error("File exceeds maximum allowed size of 10MB.");
   }
 
+  const isJpeg = buffer.length >= 3 && buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff;
+  const isPng = buffer.length >= 8 && buffer.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+  const isWebp = buffer.length >= 12 && buffer.subarray(0, 4).toString("ascii") === "RIFF" && buffer.subarray(8, 12).toString("ascii") === "WEBP";
+  const signatureMatches =
+    ((mimeType === "image/jpeg" || mimeType === "image/jpg") && isJpeg) ||
+    (mimeType === "image/png" && isPng) ||
+    (mimeType === "image/webp" && isWebp);
+  if (!signatureMatches) {
+    throw new Error("The uploaded file content does not match its declared image type.");
+  }
+
   // Generate unique, unpredictable storage key
-  const ext = path.extname(originalName) || ".png";
+  const ext = isJpeg ? ".jpg" : isPng ? ".png" : ".webp";
   const randomKey = crypto.randomBytes(24).toString("hex") + ext;
   const targetPath = path.join(UPLOAD_DIR, randomKey);
 
@@ -73,7 +85,7 @@ export async function deletePrivateFile(storageKey: string): Promise<boolean> {
 export function generateSignedFileUrl(storageKey: string, expiresInSeconds: number = 300): string {
   const safeKey = path.basename(storageKey);
   const expiresAt = Math.floor(Date.now() / 1000) + expiresInSeconds;
-  const secret = process.env.NEXTAUTH_SECRET || "scamcheck-temp-secret";
+  const secret = requireServerSecret("NEXTAUTH_SECRET");
   const signature = crypto
     .createHmac("sha256", secret)
     .update(`${safeKey}:${expiresAt}`)
@@ -90,13 +102,14 @@ export function verifySignedUrl(storageKey: string, expires: number, signature: 
     return false; // Expired
   }
   const safeKey = path.basename(storageKey);
-  const secret = process.env.NEXTAUTH_SECRET || "scamcheck-temp-secret";
+  const secret = requireServerSecret("NEXTAUTH_SECRET");
   const expectedSig = crypto
     .createHmac("sha256", secret)
     .update(`${safeKey}:${expires}`)
     .digest("hex");
 
-  return signature === expectedSig;
+  if (signature.length !== expectedSig.length) return false;
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSig));
 }
 
 /**

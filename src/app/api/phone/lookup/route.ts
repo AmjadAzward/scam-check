@@ -4,11 +4,15 @@ import { lookupCommunityIntelligence } from "@/lib/risk-engine/community-intelli
 import prisma from "@/lib/db";
 import crypto from "crypto";
 import { calculateIpqsPhoneRisk, lookupIpqsPhone } from "@/lib/ipqs-phone";
+import { checkRateLimit, rateLimitResponse, requestFingerprint } from "@/lib/security/rate-limit";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
   try {
+    const limit = checkRateLimit("phone-lookup", requestFingerprint(req), 20, 60 * 60 * 1000);
+    if (!limit.allowed) return rateLimitResponse(limit, "Phone lookup limit reached. Please try again later.");
+
     const { searchParams } = new URL(req.url);
     const rawNumber = searchParams.get("number");
 

@@ -4,6 +4,8 @@ import { analyzeUrl } from "../src/lib/risk-engine/url-analyzer";
 import { analyzeMessage } from "../src/lib/risk-engine/message-analyzer";
 import { maskCreditCard, maskCvv, maskOtp, maskPhoneNumber } from "../src/lib/privacy/masking";
 import prisma from "../src/lib/db";
+import { calculateIpqsPhoneRisk } from "../src/lib/ipqs-phone";
+import { checkRateLimit } from "../src/lib/security/rate-limit";
 
 async function runTests() {
   console.log("🧪 Starting ScamCheck Test Suite...\n");
@@ -127,6 +129,20 @@ async function runTests() {
   });
   assert(offlineScan.riskScore > 60, "Engine generates accurate risk assessment without OpenAI key");
   assert(offlineScan.reasons.length > 0, "Reasons populated in offline mode");
+
+  // --- TEST 8: Security controls and external score normalization ---
+  console.log("\nTest Suite 8: Security Controls");
+  const rateKey = `test-${Date.now()}`;
+  assert(checkRateLimit("test", rateKey, 2, 60_000).allowed, "Rate limiter allows request within quota");
+  checkRateLimit("test", rateKey, 2, 60_000);
+  assert(!checkRateLimit("test", rateKey, 2, 60_000).allowed, "Rate limiter blocks request above quota");
+
+  const abusiveRisk = calculateIpqsPhoneRisk({
+    available: true, valid: true, active: true, fraudScore: 20, risky: false,
+    recentAbuse: true, spammer: false, leaked: false, voip: false, prepaid: false,
+    carrier: null, lineType: null, country: null, region: null,
+  });
+  assert(abusiveRisk >= 85, "Recent external abuse produces a high-risk score");
 
   console.log("\n=========================================");
   console.log(`Results: ${passed} passed, ${failed} failed`);

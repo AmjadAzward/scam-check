@@ -167,3 +167,16 @@ model AuditLog {
   @@index([userId])
   @@index([createdAt])
 }
+
+model ExternalLookupCache {
+  id         String   @id @default(cuid())
+  provider   String
+  lookupHash String
+  response   Json
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([provider, lookupHash])
+  @@index([expiresAt])
+}

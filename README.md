@@ -50,23 +50,26 @@ Next.js 14 App Router, TypeScript, Tailwind CSS, Auth.js/NextAuth, Prisma, Zod, 
 
    Open `http://localhost:3000`.
 
-## Demo accounts
+## Seed accounts
 
-The seed creates these development-only accounts:
-
-| Role | Email | Password |
-| --- | --- | --- |
-| Admin | `admin@scamcheck.lk` | `Admin123!Secure` |
-| Moderator | `moderator@scamcheck.lk` | `Admin123!Secure` |
-| User | `user@scamcheck.lk` | `User123!Safe` |
-
-Do not use seeded credentials in a public environment.
+The seed requires unique passwords through `SEED_ADMIN_PASSWORD`,
+`SEED_MODERATOR_PASSWORD`, and `SEED_USER_PASSWORD`. It will not run with
+missing password variables, and no account passwords are published in this repository.
 
 ## Optional services
 
 - Set `OPENAI_API_KEY` to enable backend AI-assisted message analysis. The deterministic risk engine remains available without it.
 - Set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` to enable Google login.
+- Set `IPQS_API_KEY` to enable server-side phone reputation checks. Results are cached by a one-way phone hash in PostgreSQL.
 - Local development stores uploads in the non-public `private_uploads` directory and serves them through expiring signed routes. Configure private S3/R2 storage before a multi-instance production deployment.
+
+## Production safeguards
+
+- `NEXTAUTH_SECRET` is mandatory and must contain at least 32 characters; the app has no fallback secret.
+- Authentication, registration, scans, uploads, reports, and external phone lookups are throttled.
+- Uploaded image signatures are checked against their declared MIME type.
+- `/api/health` reports database and optional-service readiness without returning secrets.
+- Use a distributed edge rate limiter when deploying multiple application instances.
 
 ## Supabase deployment
 

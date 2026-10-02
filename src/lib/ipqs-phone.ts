@@ -1,3 +1,7 @@
+import crypto from "crypto";
+import prisma from "@/lib/db";
+import type { Prisma } from "@prisma/client";
+
 const IPQS_TIMEOUT_MS = 6_000;
 const CACHE_TTL_MS = 60 * 60 * 1_000;
 
@@ -59,6 +63,20 @@ export async function lookupIpqsPhone(phone: string): Promise<IpqsPhoneIntellige
   const cached = cache.get(phone);
   if (cached && cached.expiresAt > Date.now()) return cached.value;
 
+  const lookupHash = crypto.createHash("sha256").update(phone).digest("hex");
+  try {
+    const persisted = await prisma.externalLookupCache.findUnique({
+      where: { provider_lookupHash: { provider: "IPQS_PHONE", lookupHash } },
+    });
+    if (persisted && persisted.expiresAt.getTime() > Date.now()) {
+      const value = persisted.response as unknown as IpqsPhoneIntelligence;
+      cache.set(phone, { value, expiresAt: persisted.expiresAt.getTime() });
+      return value;
+    }
+  } catch (error) {
+    console.warn("Persistent IPQS cache unavailable:", error instanceof Error ? error.message : "Unknown error");
+  }
+
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), IPQS_TIMEOUT_MS);
 
@@ -95,6 +113,17 @@ export async function lookupIpqsPhone(phone: string): Promise<IpqsPhoneIntellige
     };
 
     cache.set(phone, { value: result, expiresAt: Date.now() + CACHE_TTL_MS });
+    try {
+      const expiresAt = new Date(Date.now() + CACHE_TTL_MS);
+      const response = JSON.parse(JSON.stringify(result)) as Prisma.InputJsonValue;
+      await prisma.externalLookupCache.upsert({
+        where: { provider_lookupHash: { provider: "IPQS_PHONE", lookupHash } },
+        update: { response, expiresAt },
+        create: { provider: "IPQS_PHONE", lookupHash, response, expiresAt },
+      });
+    } catch (error) {
+      console.warn("Could not persist IPQS cache:", error instanceof Error ? error.message : "Unknown error");
+    }
     return result;
   } catch (error) {
     console.warn("IPQS phone lookup failed:", error instanceof Error ? error.message : "Unknown error");

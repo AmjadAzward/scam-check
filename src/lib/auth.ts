@@ -3,6 +3,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import prisma from "@/lib/db";
 import bcrypt from "bcryptjs";
+import { requireServerSecret } from "@/lib/security/secrets";
+import { checkRateLimit } from "@/lib/security/rate-limit";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -34,8 +36,14 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Please enter your email and password");
         }
 
+        const email = credentials.email.toLowerCase().trim();
+        const loginLimit = checkRateLimit("login", email, 8, 15 * 60 * 1000);
+        if (!loginLimit.allowed) {
+          throw new Error("Too many login attempts. Please try again later.");
+        }
+
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email.toLowerCase().trim() },
+          where: { email },
           include: { preferences: true },
         });
 
@@ -79,5 +87,5 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET || "scamcheck-super-secure-jwt-secret-key-12345",
+  secret: requireServerSecret("NEXTAUTH_SECRET"),
 };

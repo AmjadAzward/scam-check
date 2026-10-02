@@ -133,6 +133,17 @@ CREATE TABLE "AuditLog" (
     CONSTRAINT "AuditLog_pkey" PRIMARY KEY ("id")
 );
 
+CREATE TABLE "ExternalLookupCache" (
+    "id" TEXT NOT NULL,
+    "provider" TEXT NOT NULL,
+    "lookupHash" TEXT NOT NULL,
+    "response" JSONB NOT NULL,
+    "expiresAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    CONSTRAINT "ExternalLookupCache_pkey" PRIMARY KEY ("id")
+);
+
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE INDEX "User_email_idx" ON "User"("email");
 CREATE UNIQUE INDEX "UserPreference_userId_key" ON "UserPreference"("userId");
@@ -152,6 +163,8 @@ CREATE INDEX "ThreatIndicator_indicatorValueHash_idx" ON "ThreatIndicator"("indi
 CREATE INDEX "ThreatIndicator_active_idx" ON "ThreatIndicator"("active");
 CREATE INDEX "AuditLog_userId_idx" ON "AuditLog"("userId");
 CREATE INDEX "AuditLog_createdAt_idx" ON "AuditLog"("createdAt");
+CREATE UNIQUE INDEX "ExternalLookupCache_provider_lookupHash_key" ON "ExternalLookupCache"("provider", "lookupHash");
+CREATE INDEX "ExternalLookupCache_expiresAt_idx" ON "ExternalLookupCache"("expiresAt");
 
 ALTER TABLE "UserPreference" ADD CONSTRAINT "UserPreference_userId_fkey"
   FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
