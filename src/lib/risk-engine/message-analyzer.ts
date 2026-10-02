@@ -66,6 +66,8 @@ const PERSONAL_INFO_REGEX =
 const UNREALISTIC_OFFER_REGEX =
   /(won|congratulations|lottery|lucky\s*draw|prize|free\s*gift|guaranteed\s*return|daily\s*income|200%|crypto\s*task|like\s*and\s*earn|ත්‍යාගයක්|දිනුමක්|නොමිලේ|වාසනාවන්ත|லாட்டரி|பரிசு|வென்றுள்ளீர்கள்|இலவசம்)/i;
 
+const GIFT_CARD_PAYMENT_REGEX = /(purchase|buy)\s+gift\s+cards?|send\s+(?:the\s+)?(?:gift\s+card\s+)?codes?/i;
+
 const BRAND_PATTERNS = [
   { name: "Daraz", regex: /(daraz|ඩරාස්|டராஸ்)/i },
   { name: "Sri Lanka Post", regex: /(sl\s*post|sri\s*lanka\s*post|colombo\s*central\s*post|postal\s*department|තැපැල්\s*දෙපාර්තමේන්තුව|அஞ்சல்\s*திணைக்களம்)/i },
@@ -139,9 +141,11 @@ export function analyzeMessage(rawText: string): MessageAnalysisResult {
   // 3. Indicator Detection
   const urgencyDetected = URGENCY_REGEX.test(rawText);
   const threatDetected = THREAT_SUSPENSION_REGEX.test(rawText);
-  const paymentRequested = PAYMENT_REGEX.test(rawText);
-  const otpRequested = OTP_REGEX.test(rawText);
-  const credentialRequested = CREDENTIAL_REGEX.test(rawText);
+  const explicitSafetyAdvice = /(?:never|do not|don't|will not|won't)\s+(?:ask\s+(?:you\s+)?(?:for|to share)|share|send|provide).{0,45}(?:password|pin|otp|one[-\s]time|verification code)/i.test(rawText);
+  const paymentNegated = /(?:no|not)\s+payment\s+(?:is\s+)?required|payment\s+is\s+not\s+required/i.test(rawText);
+  const paymentRequested = (PAYMENT_REGEX.test(rawText) || GIFT_CARD_PAYMENT_REGEX.test(rawText)) && !paymentNegated;
+  const otpRequested = OTP_REGEX.test(rawText) && !explicitSafetyAdvice;
+  const credentialRequested = CREDENTIAL_REGEX.test(rawText) && !explicitSafetyAdvice;
   const bankingInfoRequested = BANKING_INFO_REGEX.test(rawText);
   const personalInfoRequested = PERSONAL_INFO_REGEX.test(rawText);
   const unrealisticOfferDetected = UNREALISTIC_OFFER_REGEX.test(rawText);

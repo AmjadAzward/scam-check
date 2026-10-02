@@ -6,13 +6,14 @@ import { deletePrivateFile } from "@/lib/storage";
 
 export async function GET(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession(authOptions);
     const userId = (session?.user as any)?.id;
     const scan = await prisma.scan.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         inputs: true,
         signals: true,
@@ -64,9 +65,10 @@ export async function GET(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession(authOptions);
     const userId = (session?.user as any)?.id;
 
@@ -78,7 +80,7 @@ export async function PATCH(
     const { isSaved } = body;
 
     const scan = await prisma.scan.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!scan) {
@@ -91,7 +93,7 @@ export async function PATCH(
     }
 
     const updated = await prisma.scan.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         isSaved: typeof isSaved === "boolean" ? isSaved : !scan.isSaved,
       },
@@ -106,9 +108,10 @@ export async function PATCH(
 
 export async function DELETE(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession(authOptions);
     const userId = (session?.user as any)?.id;
 
@@ -117,7 +120,7 @@ export async function DELETE(
     }
 
     const scan = await prisma.scan.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: { inputs: true },
     });
 
@@ -140,7 +143,7 @@ export async function DELETE(
     }
 
     await prisma.scan.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ success: true, message: "Scan permanently deleted." });

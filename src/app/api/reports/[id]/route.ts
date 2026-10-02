@@ -4,11 +4,12 @@ import { generateSignedFileUrl } from "@/lib/storage";
 
 export async function GET(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const report = await prisma.communityReport.findUnique({
-      where: { id: params.id },
+      where: { id },
       select: {
         id: true,
         identifierType: true,
