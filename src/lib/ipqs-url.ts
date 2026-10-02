@@ -31,7 +31,7 @@ function empty(message: string): IpqsUrlIntelligence {
 }
 
 const bool = (value: unknown) => typeof value === "boolean" ? value : null;
-const text = (value: unknown) => typeof value === "string" && value !== "N/A" ? value : null;
+const text = (value: unknown) => typeof value === "string" && value !== "N/A" && !value.toLowerCase().includes("upgraded plan required") ? value : null;
 
 export async function lookupIpqsUrl(url: string): Promise<IpqsUrlIntelligence> {
   const apiKey = process.env.IPQS_API_KEY?.trim();
