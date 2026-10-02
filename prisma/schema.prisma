@@ -22,13 +22,34 @@ model User {
   timezone     String          @default("Asia/Colombo")
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt
+  emailVerifiedAt DateTime?
+  failedLoginAttempts Int      @default(0)
+  lockedUntil  DateTime?
+  lastLoginAt  DateTime?
+  twoFactorEnabled Boolean     @default(false)
+  twoFactorSecret String?
 
   preferences  UserPreference?
   scans        Scan[]
   reports      CommunityReport[]
   auditLogs    AuditLog[]
+  authTokens   AuthToken[]
 
   @@index([email])
+}
+
+model AuthToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique
+  type      String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId, type])
+  @@index([expiresAt])
 }
 
 model UserPreference {
@@ -50,6 +71,10 @@ model Scan {
   status      String       @default("COMPLETED") // "COMPLETED" | "PROCESSING" | "FAILED"
   riskLevel   String       // "LOW_RISK" | "MEDIUM_RISK" | "HIGH_RISK" | "KNOWN_MALICIOUS"
   riskScore   Int          // 0 - 100
+  assessmentStatus String  @default("ASSESSED")
+  evidenceConfidence Int   @default(0)
+  modelVersion String      @default("scamcheck-risk-v1")
+  scoreProvenance Json?
   summary     String       @db.Text
   language    String       @default("en")
   isSaved     Boolean      @default(false)
@@ -179,4 +204,13 @@ model ExternalLookupCache {
 
   @@unique([provider, lookupHash])
   @@index([expiresAt])
+}
+
+model ApiRateLimit {
+  key       String   @id
+  count     Int
+  resetAt   DateTime
+  updatedAt DateTime @updatedAt
+
+  @@index([resetAt])
 }

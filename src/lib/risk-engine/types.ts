@@ -27,6 +27,10 @@ export interface RiskEngineResult {
   scanType: ScanType;
   riskLevel: RiskLevel;
   riskScore: number; // 0 - 100
+  assessmentStatus: "ASSESSED" | "INSUFFICIENT_EVIDENCE";
+  evidenceConfidence: number;
+  modelVersion: string;
+  scoreProvenance: Record<string, unknown>;
   summary: string;
   language: string;
   claimedOrg: string | null;

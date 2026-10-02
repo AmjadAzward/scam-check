@@ -17,6 +17,8 @@ import { calculateIpqsPhoneRisk, lookupIpqsPhone } from "@/lib/ipqs-phone";
 
 export { DEFAULT_WEIGHTS } from "./config";
 
+export const RISK_MODEL_VERSION = "scamcheck-risk-v2.0.0";
+
 export interface RiskEngineInput {
   scanType: ScanType;
   text?: string;
@@ -306,6 +308,12 @@ export async function runRiskEngine(input: RiskEngineInput): Promise<RiskEngineR
 
   // Ensure bounds
   calculatedScore = Math.min(100, Math.max(5, calculatedScore));
+  const assessmentStatus = activeWeightSum === 0 && !verifiedPhoneBaseline
+    ? "INSUFFICIENT_EVIDENCE" as const
+    : "ASSESSED" as const;
+  const evidenceConfidence = signals.length > 0
+    ? Math.round(signals.reduce((sum, signal) => sum + signal.confidence, 0) / signals.length)
+    : 0;
 
   // 3. Assign Risk Level
   let riskLevel: RiskLevel = "LOW_RISK";
@@ -328,7 +336,7 @@ export async function runRiskEngine(input: RiskEngineInput): Promise<RiskEngineR
   const sortedSignals = [...signals].sort((a, b) => b.score - a.score);
 
   sortedSignals.forEach((sig) => {
-    if (!seenTitles.has(sig.title) && reasons.length < 5) {
+    if (!seenTitles.has(sig.title) && reasons.length < 8) {
       seenTitles.add(sig.title);
       reasons.push({
         title: sig.title,
@@ -385,6 +393,20 @@ export async function runRiskEngine(input: RiskEngineInput): Promise<RiskEngineR
     scanType: input.scanType,
     riskLevel,
     riskScore: calculatedScore,
+    assessmentStatus,
+    evidenceConfidence,
+    modelVersion: RISK_MODEL_VERSION,
+    scoreProvenance: {
+      formula: "normalized weighted average of active evidence channels with verified-threat severity floors",
+      activeChannels: channels.filter((channel) => channel.risk > 0).length,
+      signalCount: signals.length,
+      channelScores: {
+        message: messageRisk, url: urlRisk, threatIntelligence: threatIntelRisk,
+        impersonation: impersonationRisk, community: communityRisk,
+        sensitiveInformation: sensitiveInfoRisk, senderVerification: senderVerificationRisk,
+      },
+      weights,
+    },
     summary,
     language,
     claimedOrg,
@@ -407,6 +429,9 @@ export async function runRiskEngine(input: RiskEngineInput): Promise<RiskEngineR
       weightsUsed: weights,
       threatIntelMatched: isAuthoritativeMalicious,
       timestamp: new Date().toISOString(),
+      assessmentStatus,
+      evidenceConfidence,
+      modelVersion: RISK_MODEL_VERSION,
     },
   };
 }

@@ -3,6 +3,9 @@ import prisma from "@/lib/db";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { checkRateLimit, rateLimitResponse, requestFingerprint } from "@/lib/security/rate-limit";
+import { createAuthToken } from "@/lib/auth-tokens";
+import { sendSecurityEmail } from "@/lib/email";
+import { verifyTurnstile } from "@/lib/security/turnstile";
 
 const RegisterSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").max(50),
@@ -10,11 +13,12 @@ const RegisterSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters"),
   country: z.string().default("LK"),
   language: z.string().default("en"),
+  turnstileToken: z.string().optional().default(""),
 });
 
 export async function POST(req: Request) {
   try {
-    const limit = checkRateLimit("register", requestFingerprint(req), 5, 60 * 60 * 1000);
+    const limit = await checkRateLimit("register", requestFingerprint(req), 5, 60 * 60 * 1000);
     if (!limit.allowed) return rateLimitResponse(limit, "Too many registration attempts. Please try again later.");
 
     const body = await req.json();
@@ -26,6 +30,7 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+    if (!(await verifyTurnstile(result.data.turnstileToken))) return NextResponse.json({ error: "Human verification failed. Please try again." }, { status: 400 });
 
     const { name, email, password, country, language } = result.data;
     const normalizedEmail = email.toLowerCase().trim();
@@ -68,6 +73,12 @@ export async function POST(req: Request) {
         metadata: JSON.stringify({ country, language }),
       },
     });
+
+    if (process.env.RESEND_API_KEY && process.env.EMAIL_FROM) {
+      const token = await createAuthToken(user.id, "VERIFY_EMAIL", 24 * 60);
+      const base = process.env.APP_URL || process.env.NEXTAUTH_URL || "http://localhost:3000";
+      await sendSecurityEmail(user.email, "Verify your ScamCheck email", `<p>Welcome to ScamCheck.</p><p><a href="${base}/auth/verify-email?token=${encodeURIComponent(token)}">Verify email address</a></p><p>This link expires in 24 hours.</p>`);
+    }
 
     return NextResponse.json(
       {

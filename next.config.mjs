@@ -39,7 +39,7 @@ const nextConfig = {
         },
         {
           key: "Content-Security-Policy",
-          value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://www.ipqualityscore.com https://api.openai.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'",
+          value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://www.ipqualityscore.com https://ipqualityscore.com https://api.openai.com https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'",
         },
       ],
     },

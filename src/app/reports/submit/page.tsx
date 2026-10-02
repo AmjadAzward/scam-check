@@ -11,6 +11,7 @@ import {
   AlertCircle,
   Lock,
 } from "lucide-react";
+import TurnstileWidget, { getTurnstileToken } from "@/components/common/TurnstileWidget";
 
 function SubmitReportContent() {
   const router = useRouter();
@@ -72,6 +73,7 @@ function SubmitReportContent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const turnstileToken = getTurnstileToken(e.currentTarget as HTMLFormElement);
     setError(null);
 
     if (!rawIdentifier.trim()) {
@@ -116,6 +118,7 @@ function SubmitReportContent() {
           currency: "LKR",
           evidenceStorageKey,
           dateEncountered,
+          turnstileToken,
         }),
       });
 
@@ -336,6 +339,7 @@ function SubmitReportContent() {
           </div>
 
           {/* Submit Action */}
+          <TurnstileWidget />
           <button
             type="submit"
             disabled={isSubmitting}

@@ -1,6 +1,7 @@
 import { matchBrandDomain } from "./brand-matcher";
 import crypto from "crypto";
 import prisma from "@/lib/db";
+import { lookupIpqsUrl } from "@/lib/ipqs-url";
 
 export interface UrlAnalysisSignal {
   type: string;
@@ -276,6 +277,31 @@ export async function analyzeUrl(
       description: `This destination matches verified active malicious campaign records from ${threatMatch.source}.`,
       evidence: `Indicator: ${threatMatch.displayValue}`,
       source: `Threat Intelligence (${threatMatch.source})`,
+    });
+  }
+
+  // 9. Live external URL reputation. IPQS performs the remote scan; ScamCheck never opens the URL.
+  const external = await lookupIpqsUrl(parsed.toString());
+  if (external.available) {
+    const externalScore = external.riskScore ?? 0;
+    const confirmedExternalThreat = external.phishing === true || external.malware === true;
+    if (confirmedExternalThreat) threatIntelMatch = true;
+    signals.push({
+      type: "threat_intel",
+      score: Math.max(5, externalScore),
+      confidence: confirmedExternalThreat ? 99 : external.suspicious || external.unsafe ? 90 : 80,
+      title: confirmedExternalThreat
+        ? "Live reputation confirms a malicious destination"
+        : external.suspicious || external.unsafe
+        ? "Live URL reputation warning"
+        : "Live URL reputation check completed",
+      description: confirmedExternalThreat
+        ? `IPQS identified ${external.phishing ? "phishing" : "malware"} activity for this destination.`
+        : external.suspicious || external.unsafe
+        ? "IPQS found suspicious or unsafe reputation signals for this destination."
+        : "IPQS did not return active phishing, malware, or unsafe reputation flags.",
+      evidence: `Risk ${externalScore}/100 | Trust: ${external.domainTrust || "not rated"} | Age: ${external.domainAge || "unknown"}`,
+      source: "IPQualityScore URL Reputation",
     });
   }
 

@@ -5,6 +5,8 @@ import prisma from "@/lib/db";
 import bcrypt from "bcryptjs";
 import { requireServerSecret } from "@/lib/security/secrets";
 import { checkRateLimit } from "@/lib/security/rate-limit";
+import { sendSecurityEmail } from "@/lib/email";
+import { verifyTurnstile } from "@/lib/security/turnstile";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -30,14 +32,16 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+        turnstileToken: { label: "Human verification", type: "text" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
           throw new Error("Please enter your email and password");
         }
+        if (!(await verifyTurnstile(credentials.turnstileToken || ""))) throw new Error("Human verification failed.");
 
         const email = credentials.email.toLowerCase().trim();
-        const loginLimit = checkRateLimit("login", email, 8, 15 * 60 * 1000);
+        const loginLimit = await checkRateLimit("login", email, 8, 15 * 60 * 1000);
         if (!loginLimit.allowed) {
           throw new Error("Too many login attempts. Please try again later.");
         }
@@ -51,10 +55,24 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Invalid email or password");
         }
 
+        if (user.lockedUntil && user.lockedUntil > new Date()) {
+          throw new Error("Account temporarily locked. Try again later or reset your password.");
+        }
+
+        if (process.env.RESEND_API_KEY && !user.emailVerifiedAt) {
+          throw new Error("Verify your email address before signing in.");
+        }
+
         const isValid = await bcrypt.compare(credentials.password, user.passwordHash);
         if (!isValid) {
+          const attempts = user.failedLoginAttempts + 1;
+          const lockedUntil = attempts >= 5 ? new Date(Date.now() + 15 * 60_000) : null;
+          await prisma.user.update({ where: { id: user.id }, data: { failedLoginAttempts: attempts >= 5 ? 0 : attempts, lockedUntil } });
+          if (lockedUntil) await sendSecurityEmail(user.email, "ScamCheck account temporarily locked", "<p>Your account was temporarily locked after repeated unsuccessful sign-in attempts. You can wait 15 minutes or reset your password.</p>");
           throw new Error("Invalid email or password");
         }
+
+        await prisma.user.update({ where: { id: user.id }, data: { failedLoginAttempts: 0, lockedUntil: null, lastLoginAt: new Date() } });
 
         return {
           id: user.id,

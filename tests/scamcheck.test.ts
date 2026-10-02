@@ -133,9 +133,9 @@ async function runTests() {
   // --- TEST 8: Security controls and external score normalization ---
   console.log("\nTest Suite 8: Security Controls");
   const rateKey = `test-${Date.now()}`;
-  assert(checkRateLimit("test", rateKey, 2, 60_000).allowed, "Rate limiter allows request within quota");
-  checkRateLimit("test", rateKey, 2, 60_000);
-  assert(!checkRateLimit("test", rateKey, 2, 60_000).allowed, "Rate limiter blocks request above quota");
+  assert((await checkRateLimit("test", rateKey, 2, 60_000)).allowed, "Rate limiter allows request within quota");
+  await checkRateLimit("test", rateKey, 2, 60_000);
+  assert(!(await checkRateLimit("test", rateKey, 2, 60_000)).allowed, "Rate limiter blocks request above quota");
 
   const abusiveRisk = calculateIpqsPhoneRisk({
     available: true, valid: true, active: true, fraudScore: 20, risky: false,

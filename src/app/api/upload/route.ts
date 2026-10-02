@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
   try {
-    const limit = checkRateLimit("upload", requestFingerprint(req), 10, 60 * 60 * 1000);
+    const limit = await checkRateLimit("upload", requestFingerprint(req), 10, 60 * 60 * 1000);
     if (!limit.allowed) return rateLimitResponse(limit, "Upload limit reached. Please try again later.");
 
     const formData = await req.formData();

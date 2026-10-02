@@ -5,6 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ShieldCheck, Lock, Mail, AlertCircle, ArrowRight } from "lucide-react";
+import TurnstileWidget, { getTurnstileToken } from "@/components/common/TurnstileWidget";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,6 +17,7 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const turnstileToken = getTurnstileToken(e.currentTarget as HTMLFormElement);
     setIsLoading(true);
     setError(null);
 
@@ -29,6 +31,7 @@ export default function LoginPage() {
       password,
       redirect: false,
       callbackUrl,
+      turnstileToken,
     });
 
     if (res?.error) {
@@ -100,6 +103,9 @@ export default function LoginPage() {
               />
             </div>
           </div>
+
+          <div className="text-right"><Link href="/auth/forgot-password" className="text-xs font-semibold text-trust hover:underline">Forgot password?</Link></div>
+          <TurnstileWidget />
 
           <button
             type="submit"

@@ -6,6 +6,8 @@ import { normalizePhoneNumber } from "@/lib/risk-engine/phone-normalizer";
 import { maskUrl, sanitizeSensitiveText } from "@/lib/privacy/masking";
 import crypto from "crypto";
 import { z } from "zod";
+import { checkRateLimit, rateLimitResponse } from "@/lib/security/rate-limit";
+import { verifyTurnstile } from "@/lib/security/turnstile";
 
 const SubmitReportSchema = z.object({
   identifierType: z.enum([
@@ -24,22 +26,8 @@ const SubmitReportSchema = z.object({
   currency: z.string().default("LKR"),
   evidenceStorageKey: z.string().optional(),
   dateEncountered: z.string().optional(),
+  turnstileToken: z.string().optional().default(""),
 });
-
-// Simple in-memory rate limiting map (IP/User -> timestamps)
-const rateLimitMap = new Map<string, number[]>();
-
-function isRateLimited(key: string, limit: number = 5, windowMs: number = 60000): boolean {
-  const now = Date.now();
-  const timestamps = rateLimitMap.get(key) || [];
-  const validTimestamps = timestamps.filter((t) => now - t < windowMs);
-  if (validTimestamps.length >= limit) {
-    return true;
-  }
-  validTimestamps.push(now);
-  rateLimitMap.set(key, validTimestamps);
-  return false;
-}
 
 export async function POST(req: Request) {
   try {
@@ -56,12 +44,8 @@ export async function POST(req: Request) {
     // Rate limiting key based on userId or IP
     const rateKey = `user:${userId}`;
 
-    if (isRateLimited(rateKey, 6, 60000)) {
-      return NextResponse.json(
-        { error: "Too many reports submitted. Please wait a minute before submitting again." },
-        { status: 429 }
-      );
-    }
+    const limit = await checkRateLimit("report", rateKey, 6, 60_000);
+    if (!limit.allowed) return rateLimitResponse(limit, "Too many reports submitted. Please wait a minute before submitting again.");
 
     const body = await req.json();
     const result = SubmitReportSchema.safeParse(body);
@@ -72,6 +56,7 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+    if (!(await verifyTurnstile(result.data.turnstileToken))) return NextResponse.json({ error: "Human verification failed." }, { status: 400 });
 
     const {
       identifierType,

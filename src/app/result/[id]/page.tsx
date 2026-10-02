@@ -184,7 +184,7 @@ export default function RiskResultPage() {
 
         {/* Risk Score Meter */}
         <div className="p-4 sm:p-5 rounded-2xl bg-surface-muted/60 border border-surface-border">
-          <RiskMeter score={scan.riskScore} level={scan.riskLevel} />
+          <RiskMeter score={scan.riskScore} level={scan.riskLevel} assessmentStatus={scan.assessmentStatus} evidenceConfidence={scan.evidenceConfidence} />
         </div>
 
         {/* Why this looks suspicious */}
@@ -232,6 +232,10 @@ export default function RiskResultPage() {
             scanId: scan.id,
             riskScore: scan.riskScore,
             riskLevel: scan.riskLevel,
+            assessmentStatus: scan.assessmentStatus,
+            evidenceConfidence: scan.evidenceConfidence,
+            modelVersion: scan.modelVersion,
+            scoreProvenance: scan.scoreProvenance,
             claimedOrganization: scan.claimedOrg,
             language: scan.language,
             createdAt: scan.createdAt,

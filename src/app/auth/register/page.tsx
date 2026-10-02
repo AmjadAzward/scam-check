@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ShieldCheck, Lock, Mail, User, AlertCircle, ArrowRight } from "lucide-react";
 import { signIn } from "next-auth/react";
+import TurnstileWidget, { getTurnstileToken } from "@/components/common/TurnstileWidget";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -19,6 +20,7 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const turnstileToken = getTurnstileToken(e.currentTarget as HTMLFormElement);
     setIsLoading(true);
     setError(null);
 
@@ -32,6 +34,7 @@ export default function RegisterPage() {
           password,
           country,
           language,
+          turnstileToken,
         }),
       });
 
@@ -173,6 +176,7 @@ export default function RegisterPage() {
               </select>
             </div>
           </div>
+          <TurnstileWidget />
 
           <button
             type="submit"

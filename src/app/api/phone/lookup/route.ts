@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
   try {
-    const limit = checkRateLimit("phone-lookup", requestFingerprint(req), 20, 60 * 60 * 1000);
+    const limit = await checkRateLimit("phone-lookup", requestFingerprint(req), 20, 60 * 60 * 1000);
     if (!limit.allowed) return rateLimitResponse(limit, "Phone lookup limit reached. Please try again later.");
 
     const { searchParams } = new URL(req.url);

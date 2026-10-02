@@ -4,9 +4,11 @@ import { RiskLevel } from "@/lib/risk-engine/types";
 interface RiskMeterProps {
   score: number;
   level: RiskLevel | string;
+  assessmentStatus?: string;
+  evidenceConfidence?: number;
 }
 
-export default function RiskMeter({ score, level }: RiskMeterProps) {
+export default function RiskMeter({ score, level, assessmentStatus, evidenceConfidence }: RiskMeterProps) {
   const normalized = level?.toUpperCase().replace(/-/g, "_");
 
   let barColor = "bg-[#157A55]";
@@ -24,12 +26,14 @@ export default function RiskMeter({ score, level }: RiskMeterProps) {
         <span className="text-xs font-semibold text-text-secondary uppercase tracking-wider">
           Risk Assessment
         </span>
-        <div className="flex items-baseline gap-1">
+        {assessmentStatus === "INSUFFICIENT_EVIDENCE" ? (
+          <span className="text-sm font-bold text-risk-medium">Insufficient evidence</span>
+        ) : <div className="flex items-baseline gap-1">
           <span className="text-3xl font-extrabold text-text-primary tracking-tight">
             {score}
           </span>
           <span className="text-sm font-medium text-text-secondary">/ 100</span>
-        </div>
+        </div>}
       </div>
 
       {/* Calm, flat progress bar */}
@@ -45,6 +49,9 @@ export default function RiskMeter({ score, level }: RiskMeterProps) {
         <span>Medium</span>
         <span>High Risk</span>
       </div>
+      {typeof evidenceConfidence === "number" && (
+        <p className="text-[10px] text-text-tertiary">Evidence confidence: {evidenceConfidence}% - separate from risk severity.</p>
+      )}
     </div>
   );
 }
