@@ -154,6 +154,8 @@ export default function SettingsPage() {
       <div className="p-6 rounded-3xl bg-surface border border-surface-border shadow-soft space-y-4">
         <div className="flex items-center gap-2.5"><Shield className="w-5 h-5 text-trust" /><h2 className="text-base font-bold text-text-primary">Account security</h2></div>
         <Link href="/settings/password" className="flex items-center justify-between rounded-2xl border border-surface-border bg-surface-muted/60 p-4 text-sm font-semibold text-text-primary hover:border-trust">Change password <span className="text-trust">Open</span></Link>
+        <Link href="/settings/sessions" className="flex items-center justify-between rounded-2xl border border-surface-border bg-surface-muted/60 p-4 text-sm font-semibold text-text-primary hover:border-trust">Active sessions <span className="text-trust">Manage</span></Link>
+        {((session?.user as any)?.role === "ADMIN" || (session?.user as any)?.role === "MODERATOR") && <Link href="/settings/two-factor" className="flex items-center justify-between rounded-2xl border border-surface-border bg-surface-muted/60 p-4 text-sm font-semibold text-text-primary hover:border-trust">Authenticator 2FA <span className="text-trust">Configure</span></Link>}
         <p className="text-xs text-text-tertiary">Email verification, password recovery and failed-login lockout activate when the email provider is configured.</p>
       </div>
 

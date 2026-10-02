@@ -11,3 +11,7 @@ export const DEFAULT_WEIGHTS: RiskEngineWeights = {
   sensitiveInfoWeight: 0.2,
   senderVerificationWeight: 0.15,
 };
+
+// Calibrated against the versioned verified sample set in tests/calibration-dataset.json.
+export const HIGH_RISK_THRESHOLD = 60;
+export const MEDIUM_RISK_THRESHOLD = 40;

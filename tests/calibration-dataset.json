@@ -1,0 +1,10 @@
+[
+  { "id": "scam-urgent-bank", "label": "SCAM", "scanType": "MESSAGE", "text": "URGENT: Your bank account is blocked. Send your OTP and password now to reactivate it." },
+  { "id": "scam-prize", "label": "SCAM", "scanType": "MESSAGE", "text": "Congratulations, you won Rs 500,000. Pay a processing fee immediately to claim your prize." },
+  { "id": "scam-job", "label": "SCAM", "scanType": "MESSAGE", "text": "Easy online job. Deposit Rs 5000 registration fee today and earn guaranteed daily profit." },
+  { "id": "scam-parcel", "label": "SCAM", "scanType": "MESSAGE", "text": "Your parcel is detained. Pay customs immediately at http://slpost-customs-clearance.top/pay" },
+  { "id": "legit-family", "label": "LEGITIMATE", "scanType": "MESSAGE", "text": "Hi, dinner is ready. Please come home when you finish work." },
+  { "id": "legit-meeting", "label": "LEGITIMATE", "scanType": "MESSAGE", "text": "The project meeting is tomorrow at 10 AM in the main conference room." },
+  { "id": "legit-reminder", "label": "LEGITIMATE", "scanType": "MESSAGE", "text": "Reminder: your library books are due next Tuesday. You can renew them at the desk." },
+  { "id": "legit-shopping", "label": "LEGITIMATE", "scanType": "MESSAGE", "text": "Please buy milk and bread on your way home. I already paid for the vegetables." }
+]

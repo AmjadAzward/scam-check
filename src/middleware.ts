@@ -17,6 +17,9 @@ export async function middleware(request: NextRequest) {
     if (role !== "ADMIN" && role !== "MODERATOR") {
       return NextResponse.redirect(new URL("/", request.url));
     }
+    if (!token.twoFactorEnabled) {
+      return NextResponse.redirect(new URL("/settings/two-factor?required=1", request.url));
+    }
   }
 
   return NextResponse.next();

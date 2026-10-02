@@ -14,6 +14,7 @@ export async function POST(request: Request) {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user || !(await bcrypt.compare(parsed.data.currentPassword, user.passwordHash))) return NextResponse.json({ error: "Current password is incorrect." }, { status: 400 });
   await prisma.user.update({ where: { id: userId }, data: { passwordHash: await bcrypt.hash(parsed.data.newPassword, 12) } });
+  await prisma.userSession.updateMany({ where: { userId, revokedAt: null }, data: { revokedAt: new Date() } });
   await prisma.auditLog.create({ data: { userId, action: "PASSWORD_CHANGED" } });
   return NextResponse.json({ success: true });
 }

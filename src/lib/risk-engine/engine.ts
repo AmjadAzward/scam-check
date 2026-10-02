@@ -12,12 +12,12 @@ import { lookupCommunityIntelligence } from "./community-intelligence";
 import { analyzeWithAI, AIAnalysisResponse } from "./ai-analyzer";
 import prisma from "@/lib/db";
 import crypto from "crypto";
-import { DEFAULT_WEIGHTS } from "./config";
+import { DEFAULT_WEIGHTS, HIGH_RISK_THRESHOLD, MEDIUM_RISK_THRESHOLD } from "./config";
 import { calculateIpqsPhoneRisk, lookupIpqsPhone } from "@/lib/ipqs-phone";
 
 export { DEFAULT_WEIGHTS } from "./config";
 
-export const RISK_MODEL_VERSION = "scamcheck-risk-v2.0.0";
+export const RISK_MODEL_VERSION = "scamcheck-risk-v2.1.0";
 
 export interface RiskEngineInput {
   scanType: ScanType;
@@ -220,11 +220,11 @@ export async function runRiskEngine(input: RiskEngineInput): Promise<RiskEngineR
     }
 
     // Unverified sender signal
-    senderVerificationRisk = 75;
+    senderVerificationRisk = claimedOrg ? 55 : 15;
     signals.push({
       type: "sender_verification",
-      score: 75,
-      confidence: 80,
+      score: senderVerificationRisk,
+      confidence: claimedOrg ? 75 : 55,
       title: "Sender identity unverified",
       description: "The sender could not be verified against authorized organizational communication channels.",
       evidence: "Unverified SMS or social messaging sender",
@@ -319,9 +319,9 @@ export async function runRiskEngine(input: RiskEngineInput): Promise<RiskEngineR
   let riskLevel: RiskLevel = "LOW_RISK";
   if (isAuthoritativeMalicious || (threatIntelRisk >= 95 && calculatedScore >= 90)) {
     riskLevel = "KNOWN_MALICIOUS";
-  } else if (calculatedScore >= 70) {
+  } else if (calculatedScore >= HIGH_RISK_THRESHOLD) {
     riskLevel = "HIGH_RISK";
-  } else if (calculatedScore >= 40) {
+  } else if (calculatedScore >= MEDIUM_RISK_THRESHOLD) {
     riskLevel = "MEDIUM_RISK";
   } else {
     riskLevel = "LOW_RISK";

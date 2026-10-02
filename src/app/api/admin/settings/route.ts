@@ -12,7 +12,7 @@ export async function GET(_req: Request) {
     const session = await getServerSession(authOptions);
     const userRole = (session?.user as any)?.role;
 
-    if (userRole !== "ADMIN") {
+    if (userRole !== "ADMIN" || !(session?.user as any)?.twoFactorEnabled) {
       return NextResponse.json({ error: "Unauthorized: Admin privileges required" }, { status: 403 });
     }
 
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     const session = await getServerSession(authOptions);
     const userRole = (session?.user as any)?.role;
 
-    if (userRole !== "ADMIN") {
+    if (userRole !== "ADMIN" || !(session?.user as any)?.twoFactorEnabled) {
       return NextResponse.json({ error: "Unauthorized: Admin privileges required" }, { status: 403 });
     }
 

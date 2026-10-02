@@ -12,6 +12,7 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,6 +33,7 @@ export default function LoginPage() {
       redirect: false,
       callbackUrl,
       turnstileToken,
+      otp: otp.trim(),
     });
 
     if (res?.error) {
@@ -105,6 +107,7 @@ export default function LoginPage() {
           </div>
 
           <div className="text-right"><Link href="/auth/forgot-password" className="text-xs font-semibold text-trust hover:underline">Forgot password?</Link></div>
+          <div className="space-y-1.5"><label className="text-xs font-semibold text-text-secondary uppercase">Authenticator or recovery code <span className="normal-case font-normal">(admins with 2FA)</span></label><input value={otp} onChange={(e) => setOtp(e.target.value)} autoComplete="one-time-code" placeholder="6-digit code" className="w-full rounded-xl border border-surface-border bg-surface px-3.5 py-3 text-sm" /></div>
           <TurnstileWidget />
 
           <button

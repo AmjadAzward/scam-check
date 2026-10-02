@@ -28,14 +28,31 @@ model User {
   lastLoginAt  DateTime?
   twoFactorEnabled Boolean     @default(false)
   twoFactorSecret String?
+  twoFactorPendingSecret String?
+  twoFactorRecoveryCodes Json?
 
   preferences  UserPreference?
   scans        Scan[]
   reports      CommunityReport[]
   auditLogs    AuditLog[]
   authTokens   AuthToken[]
+  sessions     UserSession[]
 
   @@index([email])
+}
+
+model UserSession {
+  id          String   @id
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  lastSeenAt  DateTime @default(now())
+  expiresAt   DateTime
+  revokedAt   DateTime?
+  label       String?
+
+  @@index([userId, revokedAt])
+  @@index([expiresAt])
 }
 
 model AuthToken {

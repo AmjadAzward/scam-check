@@ -10,7 +10,7 @@ export async function GET(_req: Request) {
     const session = await getServerSession(authOptions);
     const userRole = (session?.user as any)?.role;
 
-    if (userRole !== "ADMIN" && userRole !== "MODERATOR") {
+    if ((userRole !== "ADMIN" && userRole !== "MODERATOR") || !(session?.user as any)?.twoFactorEnabled) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
