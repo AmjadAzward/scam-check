@@ -49,6 +49,7 @@ export async function runRiskEngine(input: RiskEngineInput): Promise<RiskEngineR
   let senderVerificationRisk = 0;
 
   let isAuthoritativeMalicious = false;
+  let verifiedPhoneBaseline = false;
 
   // 1. Process Based on Scan Type
   if (input.scanType === "PHONE" && input.phone) {
@@ -82,6 +83,7 @@ export async function runRiskEngine(input: RiskEngineInput): Promise<RiskEngineR
     const ipqs = await lookupIpqsPhone(norm.normalized);
     const ipqsRisk = calculateIpqsPhoneRisk(ipqs);
     if (ipqs.available) {
+      verifiedPhoneBaseline = true;
       threatIntelRisk = Math.max(threatIntelRisk, ipqsRisk);
       const externalFlags = [
         ipqs.recentAbuse ? "recent abuse" : null,
@@ -287,7 +289,11 @@ export async function runRiskEngine(input: RiskEngineInput): Promise<RiskEngineR
     }
   });
 
-  let calculatedScore = activeWeightSum > 0 ? Math.round(weightedScoreSum / activeWeightSum) : 15;
+  let calculatedScore = activeWeightSum > 0
+    ? Math.round(weightedScoreSum / activeWeightSum)
+    : verifiedPhoneBaseline
+    ? 5
+    : 15;
 
   // Max cap overrides: If any verified threat or OTP request occurs, score must reflect high severity
   if (threatIntelRisk >= 95 || isAuthoritativeMalicious) {

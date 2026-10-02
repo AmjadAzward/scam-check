@@ -29,7 +29,9 @@ export async function GET(req: Request) {
     });
 
     const externalRisk = calculateIpqsPhoneRisk(ipqs);
-    const combinedRiskScore = threatMatch ? 95 : Math.max(commIntel.riskScore, externalRisk);
+    const combinedRiskScore = threatMatch
+      ? 95
+      : Math.max(commIntel.riskScore, externalRisk, ipqs.available ? 5 : 0);
 
     return NextResponse.json({
       success: true,
