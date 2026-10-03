@@ -13,5 +13,6 @@ export async function POST(request: Request) {
     where: { id: record.userId },
     data: { passwordHash: await bcrypt.hash(parsed.data.password, 12), failedLoginAttempts: 0, lockedUntil: null },
   });
+  await prisma.userSession.updateMany({ where: { userId: record.userId, revokedAt: null }, data: { revokedAt: new Date() } });
   return NextResponse.json({ success: true });
 }

@@ -13,7 +13,10 @@ export async function GET() {
         database: "connected",
         services: {
           phoneReputation: Boolean(process.env.IPQS_API_KEY),
+          urlReputation: Boolean(process.env.IPQS_API_KEY),
           aiAnalysis: Boolean(process.env.OPENAI_API_KEY),
+          transactionalEmail: Boolean(process.env.RESEND_API_KEY && process.env.EMAIL_FROM),
+          captcha: Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && process.env.TURNSTILE_SECRET_KEY),
           cloudStorage: process.env.STORAGE_DRIVER !== "local",
         },
         responseTimeMs: Date.now() - startedAt,
