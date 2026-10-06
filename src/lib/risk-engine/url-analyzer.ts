@@ -2,6 +2,7 @@ import { matchBrandDomain } from "./brand-matcher";
 import crypto from "crypto";
 import prisma from "@/lib/db";
 import { lookupIpqsUrl } from "@/lib/ipqs-url";
+import { lookupVirusTotalUrl } from "@/lib/virustotal-url";
 
 export interface UrlAnalysisSignal {
   type: string;
@@ -302,6 +303,27 @@ export async function analyzeUrl(
         : "IPQS did not return active phishing, malware, or unsafe reputation flags.",
       evidence: `Risk ${externalScore}/100 | Trust: ${external.domainTrust || "not rated"} | Age: ${external.domainAge || "unknown"}`,
       source: "IPQualityScore URL Reputation",
+    });
+  }
+
+  // VirusTotal consensus complements IPQS using existing vendor-analysis reports.
+  const virusTotal = await lookupVirusTotalUrl(parsed.toString());
+  if (virusTotal.available) {
+    const detections = virusTotal.malicious + virusTotal.suspicious;
+    const confirmed = virusTotal.malicious >= 2;
+    if (confirmed) threatIntelMatch = true;
+    signals.push({
+      type: "threat_intel",
+      score: confirmed ? 96 : detections > 0 ? 72 : 5,
+      confidence: confirmed ? 98 : detections > 0 ? 85 : 78,
+      title: confirmed ? "Multiple security vendors flag this URL" : detections > 0 ? "VirusTotal reputation warning" : "VirusTotal reputation check completed",
+      description: confirmed
+        ? "VirusTotal reports multiple malicious detections for this destination."
+        : detections > 0
+        ? "At least one VirusTotal vendor classified this destination as suspicious or malicious."
+        : "VirusTotal's existing report contains no malicious or suspicious vendor detections.",
+      evidence: `${virusTotal.malicious} malicious, ${virusTotal.suspicious} suspicious, ${virusTotal.harmless} harmless`,
+      source: "VirusTotal URL Reputation",
     });
   }
 
