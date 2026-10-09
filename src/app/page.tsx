@@ -59,36 +59,48 @@ export default function HomePage() {
     loadRecent();
   }, [session, sessionStatus]);
 
-  const primaryActions = [
+  const actionGroups = [
     {
+      title: "Messages & media",
+      description: "Inspect content you received before replying or taking action.",
+      actions: [{
       title: t("actions.uploadScreenshot"),
       desc: t("actions.uploadScreenshotDesc"),
       icon: ImageIcon,
       href: "/check/screenshot",
       badge: "Popular",
       iconStyle: "bg-blue-600 text-white ring-blue-700/20 shadow-soft",
-    },
-    {
+    }, {
       title: t("actions.pasteMessage"),
       desc: t("actions.pasteMessageDesc"),
       icon: MessageSquare,
       href: "/check/message",
       badge: "Fastest",
       iconStyle: "bg-teal-700 text-white ring-teal-800/20 shadow-soft",
+    }, {
+      title: t("actions.scanQr"),
+      desc: t("actions.scanQrDesc"),
+      icon: QrCode,
+      href: "/check/qr",
+      iconStyle: "bg-cyan-700 text-white ring-cyan-800/20 shadow-soft",
+    }],
     },
     {
+      title: "Links & contacts",
+      description: "Check where a link leads or who may be contacting you.",
+      actions: [{
       title: t("actions.checkLink"),
       desc: t("actions.checkLinkDesc"),
       icon: Link2,
       href: "/check/link",
       iconStyle: "bg-violet-600 text-white ring-violet-700/20 shadow-soft",
-    },
-    {
+    }, {
       title: t("actions.checkNumber"),
       desc: t("actions.checkNumberDesc"),
       icon: Phone,
       href: "/check/phone",
       iconStyle: "bg-amber-600 text-white ring-amber-700/20 shadow-soft",
+    }],
     },
   ];
 
@@ -117,62 +129,46 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4 Large Primary Actions + 5th QR Option */}
-      <section className="space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {primaryActions.map((action, idx) => {
-            const Icon = action.icon;
-            return (
-              <Link
-                key={idx}
-                href={action.href}
-                className="glass-surface group relative p-6 rounded-2xl hover:border-trust/60 hover:-translate-y-1 hover:shadow-elevated transition-all duration-200 flex flex-col justify-between touch-target active:scale-[0.99]"
-              >
-                <div className="flex items-start justify-between">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ring-1 group-hover:scale-105 transition-transform ${action.iconStyle}`}>
-                    <Icon className="w-6 h-6 stroke-[2]" />
-                  </div>
-                  {action.badge && (
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary text-white border border-primary">
-                      {action.badge}
-                    </span>
-                  )}
-                </div>
-
-                <div className="mt-6 space-y-1">
-                  <div className="text-base sm:text-lg font-bold text-text-primary group-hover:text-trust transition-colors flex items-center justify-between">
-                    <span>{action.title}</span>
-                    <ArrowRight className="w-4 h-4 text-text-tertiary group-hover:text-trust group-hover:translate-x-1 transition-all" />
-                  </div>
-                  <p className="text-xs sm:text-sm text-text-secondary leading-normal">
-                    {action.desc}
-                  </p>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-
-        {/* 5th Action: Scan QR Code */}
-        <Link
-          href="/check/qr"
-          className="group p-4 sm:p-5 rounded-2xl bg-primary text-white border border-primary-light hover:-translate-y-0.5 hover:shadow-elevated transition-all duration-200 flex items-center justify-between touch-target active:scale-[0.99]"
-        >
-          <div className="flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-xl bg-white/10 text-cyan-200 flex items-center justify-center group-hover:scale-105 transition-transform ring-1 ring-white/10">
-              <QrCode className="w-5 h-5 stroke-[2]" />
-            </div>
-            <div>
-              <div className="text-sm font-bold text-white transition-colors">
-                {t("actions.scanQr")}
+      {/* Checker tools grouped by the kind of evidence the user has */}
+      <section className="space-y-8">
+        {actionGroups.map((group) => (
+          <div key={group.title} className="space-y-4">
+            <div className="flex items-end gap-4">
+              <div className="shrink-0">
+                <h2 className="text-sm font-extrabold uppercase tracking-[0.16em] text-primary">{group.title}</h2>
+                <p className="mt-1 text-xs text-text-secondary">{group.description}</p>
               </div>
-              <p className="text-xs text-blue-100/75">
-                {t("actions.scanQrDesc")}
-              </p>
+              <div className="mb-1 hidden h-px flex-1 bg-surface-border sm:block" />
+            </div>
+
+            <div className={`grid grid-cols-1 gap-4 ${group.actions.length > 2 ? "sm:grid-cols-2 lg:grid-cols-3" : "sm:grid-cols-2"}`}>
+              {group.actions.map((action) => {
+                const Icon = action.icon;
+                return (
+                  <Link
+                    key={action.href}
+                    href={action.href}
+                    className="glass-surface group relative min-h-48 rounded-2xl p-5 transition-all duration-200 hover:-translate-y-1 hover:border-trust/60 hover:shadow-elevated active:scale-[0.99]"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className={`flex h-11 w-11 items-center justify-center rounded-xl ring-1 transition-transform group-hover:scale-105 ${action.iconStyle}`}>
+                        <Icon className="h-5 w-5 stroke-[2]" />
+                      </div>
+                      {action.badge && <span className="rounded-full border border-primary bg-primary px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">{action.badge}</span>}
+                    </div>
+                    <div className="mt-6 space-y-1">
+                      <div className="flex items-center justify-between text-base font-bold text-text-primary transition-colors group-hover:text-trust">
+                        <span>{action.title}</span>
+                        <ArrowRight className="h-4 w-4 text-text-tertiary transition-all group-hover:translate-x-1 group-hover:text-trust" />
+                      </div>
+                      <p className="text-xs leading-relaxed text-text-secondary">{action.desc}</p>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           </div>
-          <ArrowRight className="w-4 h-4 text-blue-100 group-hover:translate-x-1 transition-all" />
-        </Link>
+        ))}
       </section>
 
       {/* Emergency banner for people who clicked */}
